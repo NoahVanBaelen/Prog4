@@ -19,6 +19,7 @@ public:
 	{
 		ZeroMemory(&previousState, sizeof(_XINPUT_STATE));
 		ZeroMemory(&currentState, sizeof(_XINPUT_STATE));
+		_controllerIndex = controllerIndex;
 	}
 
 	void Update()

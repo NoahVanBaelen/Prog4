@@ -35,12 +35,12 @@ void Input::HandleInput(float deltaTime, unsigned controllerIndex)
 
 int Input::AddController()
 {
-	int newControllerIndex = m_Controllers.size();
-	m_Controllers.push_back(std::make_unique<Controller>(new Controller{ newControllerIndex }));
+	int newControllerIndex = static_cast<int>(m_Controllers.size());
+	m_Controllers.push_back(std::make_unique<Controller>(Controller{ newControllerIndex }));
 	return newControllerIndex;
 }
 
-void Input::AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command)
+void Input::AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command command)
 {
 	ControllerKey newControllerKey = std::pair<unsigned, Controller::ControllerButton>(controllerIndex, button);
 	m_ControllerCommands.emplace(newControllerKey, std::make_unique<Command>(command));

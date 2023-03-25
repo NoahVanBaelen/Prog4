@@ -20,7 +20,7 @@ public:
 
 	void HandleInput(float deltaTime, unsigned controllerIndex);
 	int AddController();
-	void AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command);
+	void AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command command);
 
 private:
 	using ControllerKey = std::pair<unsigned, Controller::ControllerButton>; //Which controller and Button
@@ -32,7 +32,7 @@ private:
 	ControllerCommandsMap m_ControllerCommands{};
 	ControllerLogicMap m_ControllerLogics{};
 
-	std::vector<std::unique_ptr<Controller>> m_Controllers{};
-	std::set<Controller::ControllerButton> m_Buttons{};
+	std::vector<std::unique_ptr<Controller>> m_Controllers;
+	std::set<Controller::ControllerButton> m_Buttons;
 };
 

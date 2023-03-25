@@ -11,6 +11,9 @@ Command::~Command()
 	m_pGameObject = nullptr;
 }
 
+void Command::Execute(float)
+{}
+
 MoveCommand::MoveCommand(dae::GameObject* gameObject, float speed, glm::vec3 direction)
 	:Command(gameObject)
 	,m_Speed(speed)

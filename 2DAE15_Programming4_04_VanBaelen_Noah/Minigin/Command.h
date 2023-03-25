@@ -2,13 +2,13 @@
 #include <glm/glm.hpp>
 #include "GameObject.h"
 
-//class GameObject;
+
 class Command
 {
 public: 
 	explicit Command(dae::GameObject* gameObject);
 	virtual ~Command();
-	virtual void Execute(float deltaTime) = 0;
+	virtual void Execute(float deltaTime);
 
 protected:
 	dae::GameObject* m_pGameObject;
