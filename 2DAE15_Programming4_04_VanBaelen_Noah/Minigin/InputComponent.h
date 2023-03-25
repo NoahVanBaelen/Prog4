@@ -13,11 +13,12 @@ public:
 	InputComponent& operator=(InputComponent&& other) = delete;
 
 	void Update(float deltaTime) override;
-	void SetCommand(Controller::ControllerButton button, Input::ButtonLogic buttonLogic, Command command);
+	void SetCommand(Controller::ControllerButton button, Input::ButtonLogic buttonLogic, Command* command);
 
 private:
 
 	int m_numController;
 	Input m_Input;
+	std::vector<int> m_test;
 };
 

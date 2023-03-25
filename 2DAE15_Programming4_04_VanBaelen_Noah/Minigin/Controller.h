@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 class Controller
 {
 public:
@@ -23,11 +24,6 @@ public:
 	explicit Controller(int controllerIndex);
 	~Controller();
 
-	/*Controller(const Controller& other) = delete;
-	Controller(Controller&& other) = delete;
-	Controller& operator=(const Controller& other) = delete;
-	Controller& operator=(Controller&& other) = delete;*/
-
 	void Update();
 
 	bool IsDown(ControllerButton button) const;
@@ -37,6 +33,6 @@ public:
 private:
 
 	class ControllerImpl;
-	ControllerImpl* pImpl;
+	ControllerImpl* m_pImpl{nullptr};
 };
 

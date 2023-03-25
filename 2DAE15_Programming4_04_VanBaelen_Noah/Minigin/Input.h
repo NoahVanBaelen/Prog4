@@ -1,9 +1,9 @@
 #pragma once
 #include "Controller.h"
-#include <utility>
-#include <map>
 #include "Command.h"
 #include "Singleton.h"
+#include <vector>
+#include <map>
 #include <set>
 
 class Input final : public dae::Singleton<Input>
@@ -20,7 +20,7 @@ public:
 
 	void HandleInput(float deltaTime, unsigned controllerIndex);
 	int AddController();
-	void AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command command);
+	void AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command);
 
 private:
 	using ControllerKey = std::pair<unsigned, Controller::ControllerButton>; //Which controller and Button

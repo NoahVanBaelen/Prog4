@@ -2,6 +2,7 @@
 
 void Input::HandleInput(float deltaTime, unsigned controllerIndex)
 {
+	m_Controllers[controllerIndex]->Update();
 	for (Controller::ControllerButton button : m_Buttons)//check every button that has been bounded to a command
 	{
 		ControllerKey controllerKey{ controllerIndex,button };
@@ -36,14 +37,14 @@ void Input::HandleInput(float deltaTime, unsigned controllerIndex)
 int Input::AddController()
 {
 	int newControllerIndex = static_cast<int>(m_Controllers.size());
-	m_Controllers.push_back(std::make_unique<Controller>(Controller{ newControllerIndex }));
+	m_Controllers.emplace_back(std::make_unique<Controller>(Controller{ newControllerIndex }));
 	return newControllerIndex;
 }
 
-void Input::AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command command)
+void Input::AddCommand(unsigned controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command)
 {
 	ControllerKey newControllerKey = std::pair<unsigned, Controller::ControllerButton>(controllerIndex, button);
-	m_ControllerCommands.emplace(newControllerKey, std::make_unique<Command>(command));
+	m_ControllerCommands.emplace(newControllerKey, command);
 	m_ControllerLogics.emplace(newControllerKey, buttonLogic);
 
 	m_Buttons.insert(button);

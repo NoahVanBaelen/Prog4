@@ -40,30 +40,31 @@ public:
 
 Controller::Controller(int controllerIndex)
 {
-	pImpl = new ControllerImpl(controllerIndex);
+	m_pImpl = new ControllerImpl{ controllerIndex };
 }
 
 Controller::~Controller()
 {
-	delete pImpl;
+	delete m_pImpl;
+	m_pImpl = nullptr;
 }
 
 void Controller::Update()
 {
-	pImpl->Update();
+	m_pImpl->Update();
 }
 
 bool Controller::IsDown(ControllerButton button) const
 {
-	return pImpl->IsDownThisFrame(static_cast<unsigned int>(button));
+	return m_pImpl->IsDownThisFrame(static_cast<unsigned int>(button));
 }
 
 bool Controller::IsUp(ControllerButton button) const
 {
-	return pImpl->IsUpThisFrame(static_cast<unsigned int>(button));
+	return m_pImpl->IsUpThisFrame(static_cast<unsigned int>(button));
 }
 
 bool Controller::IsPressed(ControllerButton button) const
 {
-	return pImpl->IsPressed(static_cast<unsigned int>(button));
+	return m_pImpl->IsPressed(static_cast<unsigned int>(button));
 }

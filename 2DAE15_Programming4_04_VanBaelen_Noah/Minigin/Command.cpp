@@ -1,20 +1,14 @@
 #include "Command.h"
 #include "TransformComponent.h"
 
-Command::Command(dae::GameObject* gameObject)
+Command::Command(std::shared_ptr<dae::GameObject> gameObject)
 	:m_pGameObject{gameObject}
 {}
-
-Command::~Command()
-{
-	delete m_pGameObject;
-	m_pGameObject = nullptr;
-}
 
 void Command::Execute(float)
 {}
 
-MoveCommand::MoveCommand(dae::GameObject* gameObject, float speed, glm::vec3 direction)
+MoveCommand::MoveCommand(std::shared_ptr<dae::GameObject> gameObject, float speed, glm::vec3 direction)
 	:Command(gameObject)
 	,m_Speed(speed)
 	,m_Direction(direction)
