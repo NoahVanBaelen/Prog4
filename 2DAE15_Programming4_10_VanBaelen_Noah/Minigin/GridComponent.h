@@ -26,6 +26,7 @@ public:
 	void InitializeLevel(std::string filePath,float textureScale);
 
 	Tile ClosestTile(float xPos, float yPos);
+	void SetToClosestTileCenter(glm::vec2& position);
 	bool IsAnUnBreakableTile(float xPos, float yPos);
 
 private:

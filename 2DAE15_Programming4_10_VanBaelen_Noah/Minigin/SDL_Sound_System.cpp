@@ -10,7 +10,7 @@ void SDL_Sound_System::play(const sound_id id, const float volume)
 int SDL_Sound_System::AddSound(std::string filePath)
 {
     m_AudioclipsPath.push_back(filePath);
-    m_Audioclips.push_back(new Mix_Chunk{});
+    m_Audioclips.push_back(std::make_shared<Mix_Chunk>());
 
     return static_cast<int>(m_AudioclipsPath.size()) - 1;
 }
@@ -45,7 +45,7 @@ void SDL_Sound_System::ProccesSoundEvents()
 			auto audioclip = m_Audioclips[sound.first];
 			if (!audioclip->abuf)
 			{
-				audioclip = Mix_LoadWAV(m_AudioclipsPath[sound.first].c_str());
+				audioclip = std::make_shared<Mix_Chunk>(*Mix_LoadWAV(m_AudioclipsPath[sound.first].c_str()));
 				if (!audioclip)
 				{
 					std::cout << "Error loading sound: " << Mix_GetError();
@@ -53,7 +53,7 @@ void SDL_Sound_System::ProccesSoundEvents()
 			}
 
 			audioclip->volume = static_cast<Uint8>(sound.second);
-			Mix_PlayChannel(-1, audioclip, 0);
+			Mix_PlayChannel(-1, audioclip.get(), 0);
 		}
 	}
 }

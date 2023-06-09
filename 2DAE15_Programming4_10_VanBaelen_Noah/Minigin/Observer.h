@@ -7,11 +7,9 @@ public:
 	{
 		SCORE_CHANGE,
 		LIVE_CHANGE,
-		MOVE_LEFT,
-		MOVE_RIGHT,
-		MOVE_UP,
-		MOVE_DOWN,
-		MOVE_STANDSTILL
+		BOMB_EXPLODED,
+		REMOTE,
+		ENEMY_DIES
 	};
 
 	Observer() = default;

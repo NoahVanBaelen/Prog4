@@ -10,17 +10,16 @@ namespace dae
 {
 	class Texture2D;
 
-	// todo: this should become final.
-	class GameObject final
+	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
 
 		GameObject();
 		virtual ~GameObject();
-		//GameObject(const GameObject& other) = delete;
-		//GameObject(GameObject&& other) = delete;
-		//GameObject& operator=(const GameObject& other) = delete;
-		//GameObject& operator=(GameObject&& other) = delete;
+		GameObject(const GameObject& other) = delete;
+		GameObject(GameObject&& other) = delete;
+		GameObject& operator=(const GameObject& other) = delete;
+		GameObject& operator=(GameObject&& other) = delete;
 
 		virtual void FixedUpdate(float fixedTimeStep);
 		virtual void Update(float deltaTime);
@@ -28,7 +27,7 @@ namespace dae
 		virtual void Render() const;
 
 		std::shared_ptr<GameObject> GetParent() const;
-		void SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPosition);
+		void MakeParentNull();
 		int GetChildCount() const;
 		std::shared_ptr<GameObject> GetChildAt(int index) const;
 
@@ -83,17 +82,17 @@ namespace dae
 
 		bool m_MarkedForDestroy{ false };
 
-		void AddChild(std::shared_ptr <GameObject> child, bool keepWorldPosition);
+		void SetParent(std::shared_ptr<GameObject> newParent, bool keepWorldPosition);
 		void RemoveChild(std::shared_ptr<GameObject> child);
 
 	private:
-		//void AddChild(std::shared_ptr <GameObject> child);
+		void AddChild(std::shared_ptr<GameObject> child);
 		bool CheckIfNewParentIsOurChild(GameObject* currentParent);
 
 		std::vector<std::shared_ptr<BaseComponent>> m_componentVector;
 		std::shared_ptr<TransformComponent> m_pTransforComponent;
 
-		std::shared_ptr<GameObject> m_parent{nullptr};
-		std::vector<std::shared_ptr<GameObject>> m_children{nullptr};
+		std::weak_ptr<GameObject> m_pParent;//weak pointer to prevent circular dependencies memory leaks
+		std::vector<std::shared_ptr<GameObject>> m_pChildren{nullptr};
 	};
 };

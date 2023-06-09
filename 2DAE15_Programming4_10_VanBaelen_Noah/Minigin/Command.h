@@ -58,3 +58,12 @@ private:
 	int m_PlaceBombSoundID;
 	int m_ExplosionSoundID;
 };
+
+class DetonateBombCommand final : public Command
+{
+public:
+	DetonateBombCommand(std::shared_ptr<dae::GameObject> player);
+	void Execute(float deltaTime) override;
+private:
+	std::shared_ptr<dae::GameObject> m_pPlayer;
+};

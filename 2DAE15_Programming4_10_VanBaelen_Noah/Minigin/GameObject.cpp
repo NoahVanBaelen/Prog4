@@ -10,11 +10,13 @@ dae::GameObject::GameObject()
 {
 	m_componentVector.emplace_back(std::make_shared<TransformComponent>(this));
 	m_pTransforComponent = std::static_pointer_cast<TransformComponent>(m_componentVector[0]);
-	m_children = std::vector<std::shared_ptr<GameObject>>{};
+	m_pChildren = std::vector<std::shared_ptr<GameObject>>{};
 }
 
 dae::GameObject::~GameObject()
-{}
+{
+
+}
 
 void dae::GameObject::FixedUpdate(float fixedTimeStep) //Update children
 {
@@ -23,7 +25,7 @@ void dae::GameObject::FixedUpdate(float fixedTimeStep) //Update children
 		m_componentVector[i]->FixedUpdate(fixedTimeStep);
 	}
 
-	for (unsigned int i = 0; i < static_cast<unsigned int>(m_children.size()); i++)
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_pChildren.size()); i++)
 	{
 		GetChildAt(i)->FixedUpdate(fixedTimeStep);
 	}
@@ -36,7 +38,7 @@ void dae::GameObject::Update(float deltaTime) //Update children
 		m_componentVector[i]->Update(deltaTime);
 	}
 
-	for (unsigned int i = 0; i < static_cast<unsigned int>(m_children.size()); i++)
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_pChildren.size()); i++)
 	{
 		GetChildAt(i)->Update(deltaTime);
 	}
@@ -44,7 +46,7 @@ void dae::GameObject::Update(float deltaTime) //Update children
 
 void dae::GameObject::LateUpdate(float deltaTime)
 {
-	for (unsigned int i = 0; i < static_cast<unsigned int>(m_children.size()); i++)
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_pChildren.size()); i++)
 	{
 		GetChildAt(i)->LateUpdate(deltaTime);
 
@@ -62,7 +64,7 @@ void dae::GameObject::Render() const //Update children
 		m_componentVector[i]->Render();
 	}
 
-	for (unsigned int i = 0; i < static_cast<unsigned int>(m_children.size()); i++)
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_pChildren.size()); i++)
 	{
 		GetChildAt(i)->Render();
 	}
@@ -70,69 +72,124 @@ void dae::GameObject::Render() const //Update children
 
 std::shared_ptr<dae::GameObject> dae::GameObject::GetParent() const
 {
-	return m_parent;
+	return m_pParent.lock();
 }
 
-void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPosition)
+void dae::GameObject::MakeParentNull()
 {
-	if (m_parent != nullptr)
-	{
-		m_parent = parent;
-		m_pTransforComponent->SetPositionDirty();
-
-		if (keepWorldPosition)
-		{
-			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_parent->GetWorldPosition());
-		}
-	}
-	else
-	{
-		m_parent = parent;
-		m_pTransforComponent->SetPositionDirty();
-
-		if (keepWorldPosition)
-		{
-			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_parent->GetWorldPosition());
-		}
-	}
+	m_pParent.reset();
 }
 
+//void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPosition)
+//{
+//	if (m_parent != nullptr)
+//	{
+//		m_parent = parent;
+//		m_pTransforComponent->SetPositionDirty();
+//
+//		if (keepWorldPosition)
+//		{
+//			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_parent->GetWorldPosition());
+//		}
+//	}
+//	else
+//	{
+//		m_parent = parent;
+//		m_pTransforComponent->SetPositionDirty();
+//
+//		if (keepWorldPosition)
+//		{
+//			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_parent->GetWorldPosition());
+//		}
+//	}
+//}
+//
 int dae::GameObject::GetChildCount() const
 {
-	return static_cast<int>(m_children.size());
+	return static_cast<int>(m_pChildren.size());
 }
 
 std::shared_ptr<dae::GameObject> dae::GameObject::GetChildAt(int index) const
 {
 	if (index < GetChildCount())
 	{
-		return m_children[index];
+		return m_pChildren[index];
 	}
 	return nullptr;
 }
-
-void dae::GameObject::AddChild(std::shared_ptr<dae::GameObject> child, bool keepWorldPosition)
-{
-	if (!child->CheckIfNewParentIsOurChild(this))//Check if the new parent is one of your children/grandchildren our if our new parent this gameobject is
-	{
-		if (child->GetParent() != nullptr)
-		{
-			child->GetParent()->RemoveChild(child);
-		}
-
-		child->SetParent(std::make_shared<dae::GameObject>(*this), keepWorldPosition);
-		m_children.emplace_back(std::move(child));
-	}
-}
+//
+//std::shared_ptr<dae::GameObject> dae::GameObject::GetChildAt(int index) const
+//{
+//	if (index < GetChildCount())
+//	{
+//		return m_children[index];
+//	}
+//	return nullptr;
+//}
+//
+//void dae::GameObject::AddChild(std::shared_ptr<dae::GameObject> child, bool keepWorldPosition)
+//{
+//	if (!child->CheckIfNewParentIsOurChild(this))//Check if the new parent is one of your children/grandchildren our if our new parent this gameobject is
+//	{
+//		if (child->GetParent() != nullptr)
+//		{
+//			child->GetParent()->RemoveChild(child);
+//		}
+//
+//		child->SetParent(std::make_shared<dae::GameObject>(*this), keepWorldPosition);
+//		m_children.emplace_back(std::move(child));
+//	}
+//}
 
 //void dae::GameObject::AddChild(std::shared_ptr<dae::GameObject> child)
 //{
 //	m_children.emplace_back(std::move(child));
 //}
 
-void dae::GameObject::RemoveChild(std::shared_ptr<dae::GameObject> child)
+//void dae::GameObject::RemoveChild(std::shared_ptr<dae::GameObject> child)
+//{
+//	m_children.erase(std::remove(m_children.begin(), m_children.end(), child), m_children.end());
+//}
+
+void dae::GameObject::SetParent(std::shared_ptr<GameObject> newParent, bool keepWorldPosition)
 {
-	m_children.erase(std::remove(m_children.begin(), m_children.end(), child), m_children.end());
+	if (!CheckIfNewParentIsOurChild(newParent.get()))//makes sure that our new parent isnt a child of us
+	{
+		if (m_pParent.lock()) //Dettach itself from previous parent
+		{
+			m_pParent.lock()->RemoveChild(shared_from_this());
+		}
+
+		m_pParent = newParent;
+		m_pTransforComponent->SetPositionDirty();
+
+		if (keepWorldPosition)
+		{
+			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_pParent.lock()->GetWorldPosition());
+		}
+
+		// Add itself as a child to the given parent
+		if (m_pParent.lock())
+		{
+			m_pParent.lock()->AddChild(shared_from_this());
+		}
+	}
+}
+
+void dae::GameObject::AddChild(std::shared_ptr<GameObject> child)
+{
+	m_pChildren.push_back(child);
+}
+
+void dae::GameObject::RemoveChild(std::shared_ptr<GameObject> child)
+{
+	// Remove the given child from the children list
+	m_pChildren.erase(std::remove(m_pChildren.begin(), m_pChildren.end(), child), m_pChildren.end());
+
+	// Remove itself as a parent of the child
+	child->MakeParentNull();
+
+	child->GetComponent<TransformComponent>()->SetPositionDirty();
 }
 
 bool dae::GameObject::CheckIfNewParentIsOurChild(GameObject* currentParent) // recursieve keep checking our new parent his parents til we find ourself our a nullptr

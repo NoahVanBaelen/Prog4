@@ -26,7 +26,7 @@ public:
 protected:
 	void ProccesSoundEvents();
 	std::vector<std::string> m_AudioclipsPath;
-	std::vector<Mix_Chunk*> m_Audioclips;
+	std::vector<std::shared_ptr<Mix_Chunk>> m_Audioclips;
 	std::mutex m_Mutex;
 	std::queue<std::pair<sound_id, float>> m_SoundQueue;
 	std::condition_variable m_Condition;

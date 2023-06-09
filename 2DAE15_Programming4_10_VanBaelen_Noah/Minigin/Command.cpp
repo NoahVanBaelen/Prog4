@@ -11,6 +11,8 @@
 #include "Servicelocator.h"
 #include "SDL_Sound_System.h"
 
+#include "CollisionComponent.h"
+#include "BombObserver.h"
 
 Command::Command()
 {}
@@ -68,20 +70,37 @@ void SpawnBombCommand::Execute(float)
 {
 	if (m_pPlayer->GetComponent<PlayerStatsComponent>()->GetCurrentBombs() < m_pPlayer->GetComponent<PlayerStatsComponent>()->GetMaxBombs())
 	{
+		m_pPlayer->GetComponent<PlayerStatsComponent>()->IncreaseCurrentBombs();
 		auto& ss = Servicelocator::get_sound_system();
 		ss.play(static_cast<sound_id>(m_PlaceBombSoundID), 30);
+		std::vector<int> collisionIDs{ 0 };
 
 		auto go_Bomb = std::make_shared<dae::GameObject>();
 		go_Bomb->AddComponent<RenderComponent>();
 		go_Bomb->AddComponent<BombComponent>();
+		go_Bomb->AddComponent<CollisionComponent>()->SetUpCollisionBox(m_WidthOffset,m_HeightOffset,4,collisionIDs);
 		go_Bomb->GetComponent<BombComponent>()->SetFireOffset(m_WidthOffset, m_HeightOffset);
 		go_Bomb->GetComponent<BombComponent>()->SetFirePower(m_pPlayer->GetComponent<PlayerStatsComponent>()->GetFirePower());
 		go_Bomb->GetComponent<BombComponent>()->SetSoundID(m_ExplosionSoundID);
+		go_Bomb->GetComponent<BombComponent>()->AddObserver(new BombObserver{m_pPlayer.get()});
 		go_Bomb->GetComponent<RenderComponent>()->SetTexture("Resources/Bomb.png");
+
+		m_pPlayer->GetComponent<PlayerStatsComponent>()->AddObserver(new BombObserver{ go_Bomb.get() });
 
 		glm::vec3 playerPosition = m_pPlayer->GetWorldPosition();
 		Tile closestTile = m_pGrid->GetComponent<GridComponent>()->ClosestTile(playerPosition.x, playerPosition.y);
 		go_Bomb->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3{ closestTile.left,closestTile.top,0 });
-		m_pGrid->AddChild(go_Bomb, true);
+		go_Bomb->SetParent(m_pGrid, true);
 	}
+}
+
+DetonateBombCommand::DetonateBombCommand(std::shared_ptr<dae::GameObject> player)
+	:Command()
+{
+	m_pPlayer = player;
+}
+
+void DetonateBombCommand::Execute(float)
+{
+	m_pPlayer->GetComponent<PlayerStatsComponent>()->DetonateEarly();
 }
