@@ -88,21 +88,48 @@ void GridComponent::InitializeLevel(std::string filePath, float textureScale)
 			int enemyCollisionGroupID{ 3 };
 			for (rapidjson::Value::ConstValueIterator index = infoArray.Begin(); index != infoArray.End(); ++index)
 			{
-				const rapidjson::Value& position = *index;
-				const rapidjson::Value& row = position[0];
-				const rapidjson::Value& column = position[1];
+				const rapidjson::Value& info = *index;
+				const rapidjson::Value& row = info[0];
+				const rapidjson::Value& column = info[1];
+				const rapidjson::Value& type = info[2];
 
 				auto go_Enemy = std::make_shared<dae::GameObject>();
 				go_Enemy->AddComponent<RenderComponent>();
-				go_Enemy->GetComponent<RenderComponent>()->SetTexture("Resources/Enemie1.png");
-				go_Enemy->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
 				go_Enemy->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column.GetFloat(), m_TileHeight * row.GetFloat(), 0.f));
 				go_Enemy->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), enemyTriggerWithIDs);
 				go_Enemy->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth / 2), static_cast<int>(m_TileHeight / 2), enemyCollisionGroupID, emenyCollideWithIDs);
-				go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::slow, EnemyLogicComponent::EnemyDifficulty::lowDifficulty,
-					100, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
-				go_Enemy->GetComponent<EnemyLogicComponent>()->AddObserver(new EnemyObserver{ go_Door.get() });
 
+				switch (type.GetInt())//Set Enemy Type
+				{
+				case 0:
+					go_Enemy->GetComponent<RenderComponent>()->SetTexture("Resources/Balloom.png");
+					go_Enemy->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::slow, EnemyLogicComponent::EnemyDifficulty::lowDifficulty,
+						100, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
+					break;
+				case 1:
+					go_Enemy->GetComponent<RenderComponent>()->SetTexture("Resources/Oneal.png");
+					go_Enemy->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::normal, EnemyLogicComponent::EnemyDifficulty::normalDifficulty,
+						200, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
+					break;
+				case 2:
+					go_Enemy->GetComponent<RenderComponent>()->SetTexture("Resources/Doll.png");
+					go_Enemy->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::normal, EnemyLogicComponent::EnemyDifficulty::lowDifficulty,
+						400, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
+					break;
+				case 3:
+					go_Enemy->GetComponent<RenderComponent>()->SetTexture("Resources/Minvo.png");
+					go_Enemy->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::fast, EnemyLogicComponent::EnemyDifficulty::normalDifficulty,
+						800, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
+					break;
+				default:
+					break;
+				}
+
+				go_Enemy->GetComponent<EnemyLogicComponent>()->AddObserver(new EnemyObserver{ go_Door.get() });
 				go_Enemy->SetParent(GetOwner()->shared_from_this(), true);
 				++amountOfEnemies;
 			}
