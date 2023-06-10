@@ -64,20 +64,13 @@ void GridComponent::InitializeLevel(std::string filePath, float textureScale)
 		rapidjson::IStreamWrapper isw{ is };
 		rapidjson::Document level;
 		level.ParseStream(isw);
-		auto go_Door = std::make_shared<dae::GameObject>();
-		if (level.HasMember("doorPositions"))
-		{
-			std::vector<int> doorCollideWithIDs{ 1 };
-			const rapidjson::Value& positionArray = level["doorPositions"];
-			const rapidjson::Value& row = positionArray[0];
-			const rapidjson::Value& column = positionArray[1];
 
-			go_Door->AddComponent<RenderComponent>();
-			go_Door->GetComponent<RenderComponent>()->SetTexture("Resources/Door.png");
-			go_Door->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
-			go_Door->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column.GetFloat(), m_TileWidth * row.GetFloat(), 0.f));
-			go_Door->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), doorCollideWithIDs);
-		}
+		auto go_Door = std::make_shared<dae::GameObject>();
+		std::vector<int> doorCollideWithIDs{ 1 };
+		go_Door->AddComponent<RenderComponent>();
+		go_Door->GetComponent<RenderComponent>()->SetTexture("Resources/Door.png");
+		go_Door->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+		go_Door->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), doorCollideWithIDs);
 
 		int amountOfEnemies{ 0 };
 		if (level.HasMember("enemyInfo"))
