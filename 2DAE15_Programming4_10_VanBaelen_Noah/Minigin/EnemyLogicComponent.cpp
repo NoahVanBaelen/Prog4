@@ -175,6 +175,12 @@ void EnemyLogicComponent::SetUpEnemy(EnemySpeed speed, EnemyDifficulty difficult
 
 void EnemyLogicComponent::GetKilled()
 {
+	m_Subjects->NotifyObservers(Observer::Event::ENEMY_DIES, GetOwner());
 	GetOwner()->GetComponent<CollisionComponent>()->RemoveCollisionBox();
 	GetOwner()->m_MarkedForDestroy = true;
+}
+
+void EnemyLogicComponent::AddObserver(Observer* observer)
+{
+	m_Subjects->AddObserver(observer);
 }

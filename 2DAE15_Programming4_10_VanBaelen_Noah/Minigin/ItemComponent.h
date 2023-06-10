@@ -6,10 +6,10 @@ public:
 
 	enum class ItemType
 	{
-		EXTRA_BOMB,
-		INCREASE_FIRE,
-		INCREASE_SPEED,
-		EARLY_DETONATOR,
+		EXTRA_BOMB = 1,
+		INCREASE_FIRE = 2,
+		INCREASE_SPEED = 3,
+		EARLY_DETONATOR = 4,
 	};
 
 	ItemComponent(dae::GameObject* pOwner);

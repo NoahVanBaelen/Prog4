@@ -13,19 +13,22 @@ void FireComponent::Update(float deltaTime)
 	if (GetOwner()->HasComponent<TriggerComponent>())
 	{
 		std::pair<bool, dae::GameObject*> trigger{ GetOwner()->GetComponent<TriggerComponent>()->GetHasTriggerLastFrame() };
-		if (trigger.first == true && trigger.second->HasComponent<PlayerStatsComponent>())//player
+		if (trigger.first == true && trigger.second)
 		{
-			trigger.second->GetComponent<PlayerStatsComponent>()->DecreaseLives();
-		}
+			if (trigger.second->HasComponent<PlayerStatsComponent>())//player
+			{
+				trigger.second->GetComponent<PlayerStatsComponent>()->DecreaseLives();
+			}
 
-		if (trigger.first == true && trigger.second->HasComponent<EnemyLogicComponent>())//enemy
-		{
-			trigger.second->GetComponent<EnemyLogicComponent>()->GetKilled();
-		}
+			if (trigger.second->HasComponent<EnemyLogicComponent>())//enemy
+			{
+				trigger.second->GetComponent<EnemyLogicComponent>()->GetKilled();
+			}
 
-		if (trigger.first == true && trigger.second->HasComponent<BombComponent>())//bomb
-		{
-			trigger.second->GetComponent<BombComponent>()->EarlyDetonation();
+			if (trigger.second->HasComponent<BombComponent>())//bomb
+			{
+				trigger.second->GetComponent<BombComponent>()->EarlyDetonation();
+			}
 		}
 	}
 

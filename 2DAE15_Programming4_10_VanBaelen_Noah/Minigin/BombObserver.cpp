@@ -12,7 +12,7 @@ void BombObserver::Notify(Event event, dae::GameObject* /*notifyer*/)
 	switch (event)
 	{
 	case Observer::Event::REMOTE:
-		if (m_Observer->HasComponent<BombComponent>())
+		if (!m_Observer->m_MarkedForDestroy && m_Observer->HasComponent<BombComponent>())
 		{
 			m_Observer->GetComponent<BombComponent>()->EarlyDetonation();
 		}

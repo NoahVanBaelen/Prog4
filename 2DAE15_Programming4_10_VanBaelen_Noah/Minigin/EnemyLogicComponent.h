@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
-
+#include "Subject.h"
 class EnemyLogicComponent final : public BaseComponent
 {
 public:
@@ -27,6 +27,7 @@ public:
 	void Update(float deltaTime) override;
 	void SetUpEnemy(EnemySpeed speed, EnemyDifficulty difficulty, int score, glm::vec2 rayLenght);
 	void GetKilled();
+	void AddObserver(Observer* observer);
 
 private:
 
@@ -36,5 +37,7 @@ private:
 	glm::vec2 m_Target;
 	glm::vec2 m_rayLenght;
 	bool m_foundPlayer{ false };
+
+	std::unique_ptr<Subject> m_Subjects = std::make_unique<Subject>();
 };
 

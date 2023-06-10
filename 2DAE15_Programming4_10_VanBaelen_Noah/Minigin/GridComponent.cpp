@@ -13,6 +13,10 @@
 #include "TriggerComponent.h"
 #include "EnemyLogicComponent.h"
 
+#include "ItemComponent.h"
+#include "SpawnComponent.h"
+#include "EnemyObserver.h"
+#include "DoorComponent.h"
 
 GridComponent::GridComponent(dae::GameObject* pOwner)
 	:BaseComponent(pOwner)
@@ -60,44 +64,29 @@ void GridComponent::InitializeLevel(std::string filePath, float textureScale)
 		rapidjson::IStreamWrapper isw{ is };
 		rapidjson::Document level;
 		level.ParseStream(isw);
-
-		if (level.HasMember("blockPositions"))
+		auto go_Door = std::make_shared<dae::GameObject>();
+		if (level.HasMember("doorPositions"))
 		{
-			int blockCollisionGroupID{ 2 };
-			std::vector<int>blockCollideWithIDs{ 1, 3 };
-			const rapidjson::Value& positionArray = level["blockPositions"];
-			for (rapidjson::Value::ConstValueIterator index = positionArray.Begin(); index != positionArray.End(); ++index)
-			{
-				const rapidjson::Value& position = *index;
-				const rapidjson::Value& row = position[0];
-				const rapidjson::Value& column = position[1];
+			std::vector<int> doorCollideWithIDs{ 1 };
+			const rapidjson::Value& positionArray = level["doorPositions"];
+			const rapidjson::Value& row = positionArray[0];
+			const rapidjson::Value& column = positionArray[1];
 
-				auto go_Block = std::make_shared<dae::GameObject>();
-				go_Block->AddComponent<RenderComponent>();
-				go_Block->GetComponent<RenderComponent>()->SetTexture("Resources/Block.png");
-				go_Block->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
-				go_Block->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column.GetFloat(), m_TileWidth * row.GetFloat(), 0.f));
-				go_Block->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), blockCollisionGroupID, blockCollideWithIDs);
-				go_Block->GetComponent<CollisionComponent>()->SetIsStatic(true);
-				go_Block->SetParent(GetOwner()->shared_from_this(), true);
-				for (Tile& tile : m_Tiles)
-				{
-					if (tile.row == row.GetInt() && tile.column == column.GetInt())
-					{
-						tile.block = go_Block;
-						tile.hasBreakableBlockOnTile = true;
-					}
-				}
-			}
+			go_Door->AddComponent<RenderComponent>();
+			go_Door->GetComponent<RenderComponent>()->SetTexture("Resources/Door.png");
+			go_Door->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+			go_Door->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column.GetFloat(), m_TileWidth * row.GetFloat(), 0.f));
+			go_Door->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), doorCollideWithIDs);
 		}
 
-		if (level.HasMember("enemyPositions"))
+		int amountOfEnemies{ 0 };
+		if (level.HasMember("enemyInfo"))
 		{
-			const rapidjson::Value& positionArray = level["enemyPositions"];
+			const rapidjson::Value& infoArray = level["enemyInfo"];
 			std::vector<int>emenyCollideWithIDs{ 0 };
 			std::vector<int>enemyTriggerWithIDs{ 1 };
 			int enemyCollisionGroupID{ 3 };
-			for (rapidjson::Value::ConstValueIterator index = positionArray.Begin(); index != positionArray.End(); ++index)
+			for (rapidjson::Value::ConstValueIterator index = infoArray.Begin(); index != infoArray.End(); ++index)
 			{
 				const rapidjson::Value& position = *index;
 				const rapidjson::Value& row = position[0];
@@ -109,11 +98,86 @@ void GridComponent::InitializeLevel(std::string filePath, float textureScale)
 				go_Enemy->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
 				go_Enemy->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column.GetFloat(), m_TileHeight * row.GetFloat(), 0.f));
 				go_Enemy->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), enemyTriggerWithIDs);
-				go_Enemy->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth/2), static_cast<int>(m_TileHeight/2), enemyCollisionGroupID, emenyCollideWithIDs);
-				go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::slow, EnemyLogicComponent::EnemyDifficulty::lowDifficulty, 
-																		  100, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
+				go_Enemy->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth / 2), static_cast<int>(m_TileHeight / 2), enemyCollisionGroupID, emenyCollideWithIDs);
+				go_Enemy->AddComponent<EnemyLogicComponent>()->SetUpEnemy(EnemyLogicComponent::EnemySpeed::slow, EnemyLogicComponent::EnemyDifficulty::lowDifficulty,
+					100, glm::vec2{ static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight) });
+				go_Enemy->GetComponent<EnemyLogicComponent>()->AddObserver(new EnemyObserver{ go_Door.get() });
 
 				go_Enemy->SetParent(GetOwner()->shared_from_this(), true);
+				++amountOfEnemies;
+			}
+		}
+
+		go_Door->AddComponent<DoorComponent>()->SetAmountOfEnemy(amountOfEnemies);
+
+		if (level.HasMember("blockInfo"))
+		{
+			int blockCollisionGroupID{ 2 };
+			std::vector<int>blockCollideWithIDs{ 1, 3 };
+			const rapidjson::Value& infoArray = level["blockInfo"];
+			for (rapidjson::Value::ConstValueIterator index = infoArray.Begin(); index != infoArray.End(); ++index)
+			{
+				const rapidjson::Value& info = *index;
+				const rapidjson::Value& row = info[0];
+				const rapidjson::Value& column = info[1];
+				const rapidjson::Value& item = info[2];
+
+				auto go_Block = std::make_shared<dae::GameObject>();
+				go_Block->AddComponent<RenderComponent>();
+				go_Block->GetComponent<RenderComponent>()->SetTexture("Resources/Block.png");
+				go_Block->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+				go_Block->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column.GetFloat(), m_TileWidth * row.GetFloat(), 0.f));
+				go_Block->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), blockCollisionGroupID, blockCollideWithIDs);
+				go_Block->GetComponent<CollisionComponent>()->SetIsStatic(true);
+
+				std::vector<int> itemsCollideWithIDs{ 1 };
+				auto go_Item = std::make_shared<dae::GameObject>();
+				switch (item.GetInt())
+				{
+				case 1:
+					go_Item->AddComponent<RenderComponent>()->SetTexture("Resources/ItemBomb.png");
+					go_Item->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Item->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), itemsCollideWithIDs);
+					go_Item->AddComponent<ItemComponent>()->SetItemType(ItemComponent::ItemType::EXTRA_BOMB);
+					go_Block->AddComponent<SpawnComponent>()->SetObjectToSpawn(go_Item);
+					break;
+				case 2:
+					go_Item->AddComponent<RenderComponent>()->SetTexture("Resources/ItemFire.png");
+					go_Item->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Item->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), itemsCollideWithIDs);
+					go_Item->AddComponent<ItemComponent>()->SetItemType(ItemComponent::ItemType::INCREASE_FIRE);
+					go_Block->AddComponent<SpawnComponent>()->SetObjectToSpawn(go_Item);
+					break;
+				case 3:
+					go_Item->AddComponent<RenderComponent>()->SetTexture("Resources/ItemSpeed.png");
+					go_Item->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Item->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), itemsCollideWithIDs);
+					go_Item->AddComponent<ItemComponent>()->SetItemType(ItemComponent::ItemType::INCREASE_SPEED);
+					go_Block->AddComponent<SpawnComponent>()->SetObjectToSpawn(go_Item);
+					break;
+				case 4:
+					go_Item->AddComponent<RenderComponent>()->SetTexture("Resources/ItemRemote.png");
+					go_Item->GetComponent<RenderComponent>()->ScaleTexture(textureScale);
+					go_Item->AddComponent<TriggerComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), itemsCollideWithIDs);
+					go_Item->AddComponent<ItemComponent>()->SetItemType(ItemComponent::ItemType::EARLY_DETONATOR);
+					go_Block->AddComponent<SpawnComponent>()->SetObjectToSpawn(go_Item);
+					break;
+				case 5:
+					go_Block->AddComponent<SpawnComponent>()->SetObjectToSpawn(go_Door);
+					break;
+				default:
+					break;
+				}
+				
+				go_Block->SetParent(GetOwner()->shared_from_this(), true);
+				for (Tile& tile : m_Tiles)
+				{
+					if (tile.row == row.GetInt() && tile.column == column.GetInt())
+					{
+						tile.block = go_Block;
+						tile.hasBreakableBlockOnTile = true;
+					}
+				}
 			}
 		}
 	}
@@ -155,6 +219,11 @@ bool GridComponent::IsAnUnBreakableTile(float xPos, float yPos)
 	{
 		closest.block->m_MarkedForDestroy = true;
 		closest.block->GetComponent<CollisionComponent>()->RemoveCollisionBox();
+
+		if (closest.block->HasComponent<SpawnComponent>())//spawnItem
+		{
+			closest.block->GetComponent<SpawnComponent>()->Spawn(GetOwner()->shared_from_this());
+		}
 	}
 
 	return closest.hasObjectThatStopsExplosion;
