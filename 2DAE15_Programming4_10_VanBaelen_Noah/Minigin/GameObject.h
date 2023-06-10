@@ -84,6 +84,7 @@ namespace dae
 
 		void SetParent(std::shared_ptr<GameObject> newParent, bool keepWorldPosition);
 		void RemoveChild(std::shared_ptr<GameObject> child);
+		void DestroyAllChildren();
 
 	private:
 		void AddChild(std::shared_ptr<GameObject> child);

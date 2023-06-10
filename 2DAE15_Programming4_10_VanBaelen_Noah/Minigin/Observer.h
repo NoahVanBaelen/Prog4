@@ -9,7 +9,9 @@ public:
 		LIVE_CHANGE,
 		BOMB_EXPLODED,
 		REMOTE,
-		ENEMY_DIES
+		ENEMY_DIES,
+		END_OF_LEVEL,
+		RELOAD_LEVEL
 	};
 
 	Observer() = default;

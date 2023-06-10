@@ -36,7 +36,7 @@ void EnemyLogicComponent::Update(float deltaTime)
 
 		if (m_Difficulty == EnemyDifficulty::normalDifficulty)
 		{
-			std::vector<int> enemyCanCollideWithIDs{1};
+			std::vector<int> enemyCanCollideWithIDs{1,2};
 			std::pair<bool, dae::GameObject*> result{};
 
 			rayEnd.y += (m_rayLenght.y * 3);

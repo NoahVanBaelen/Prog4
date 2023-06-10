@@ -252,6 +252,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="ItemComponent.h" />
+    <ClInclude Include="LevelObserver.h" />
     <ClInclude Include="LiveComponent.h" />
     <ClInclude Include="Logging_Collision_System.h" />
     <ClInclude Include="Logging_Sound_System.h" />
@@ -309,6 +310,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="ItemComponent.cpp" />
+    <ClCompile Include="LevelObserver.cpp" />
     <ClCompile Include="LiveComponent.cpp" />
     <ClCompile Include="Logging_Collision_System.cpp" />
     <ClCompile Include="Logging_Sound_System.cpp" />

@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
+#include "Subject.h"
 class DoorComponent final : public BaseComponent
 {
 public:
@@ -14,7 +15,10 @@ public:
 	void SetAmountOfEnemy(int amount);
 	void DecreaseCurrentCount();
 
+	void AddObserver(Observer* observer);
+
 private:
 	int m_AmountOfEnemies{ 0 };
+	std::unique_ptr<Subject> m_Subjects = std::make_unique<Subject>();
 };
 

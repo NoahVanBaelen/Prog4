@@ -10,6 +10,7 @@ public:
 	BaseComponent() = default;
 	virtual void Update(float);
 	virtual void FixedUpdate(float);
+	virtual void LateUpdate(float);
 	virtual void Render() const;
 
 	virtual ~BaseComponent() = default;

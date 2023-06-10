@@ -14,7 +14,8 @@ void DoorComponent::Update(float)
 		std::pair<bool, dae::GameObject*> trigger{ GetOwner()->GetComponent<TriggerComponent>()->GetHasTriggerLastFrame() };
 		if (trigger.first == true && trigger.second->HasComponent<PlayerStatsComponent>())
 		{
-			std::cout << "EndLevel";
+			m_Subjects->NotifyObservers(Observer::Event::END_OF_LEVEL, GetOwner());
+			trigger.second->GetComponent<PlayerStatsComponent>()->ResetToStartPosition();
 		}
 	}
 }
@@ -27,4 +28,9 @@ void DoorComponent::SetAmountOfEnemy(int amount)
 void DoorComponent::DecreaseCurrentCount()
 {
 	--m_AmountOfEnemies;
+}
+
+void DoorComponent::AddObserver(Observer* observer)
+{
+	m_Subjects->AddObserver(observer);
 }

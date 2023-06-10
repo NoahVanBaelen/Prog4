@@ -13,6 +13,7 @@ public:
 	CollisionComponent& operator=(CollisionComponent&& other) = delete;
 
 	void Update(float deltaTime) override;
+	void LateUpdate(float) override;
 	void SetUpCollisionBox(const int width, const int height, const int collisionGroupID,const std::vector<int> collisionGroupsToCollideWithIDs);
 	void SetIsStatic(bool isStatic);
 	void RemoveCollisionBox();

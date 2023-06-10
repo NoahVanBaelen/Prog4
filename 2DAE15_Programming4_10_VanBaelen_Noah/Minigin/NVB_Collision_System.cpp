@@ -10,7 +10,7 @@ void NVB_Collision_System::AddCollisionBox(CollisionComponent* collisionBox)
 std::pair<int,int> NVB_Collision_System::HasCollision(CollisionComponent* collisionBox)
 {
     CollisionBox ourCollisionBox = collisionBox->GetCollisionBox();
-    std::vector<CollisionBox> validBoxes;
+    std::vector<CollisionBox> validBoxes{};
     for (CollisionComponent* component : m_pAllCollisionBoxes)
     {
         CollisionBox box = component->GetCollisionBox();
@@ -40,18 +40,20 @@ std::pair<int,int> NVB_Collision_System::HasCollision(CollisionComponent* collis
 
 std::pair<bool, dae::GameObject*> NVB_Collision_System::HasTrigger(const CollisionBox& ourCollisionBox)
 {
-    std::vector<CollisionBox> validBoxes;
+    std::vector<CollisionBox> validBoxes{};
+
     for (CollisionComponent* component : m_pAllCollisionBoxes)
     {
         CollisionBox box = component->GetCollisionBox();
-        for (int i = 0; i < ourCollisionBox.groupIdToCollideWith.size(); i++) //go through all boxes and add the only ones we can trigger with
+        for (int j = 0; j < ourCollisionBox.groupIdToCollideWith.size(); j++) //go through all boxes and add the only ones we can trigger with
         {
-            if (box.collisionGroupID == ourCollisionBox.groupIdToCollideWith[i])
+            if (box.collisionGroupID == ourCollisionBox.groupIdToCollideWith[j])
             {
                 validBoxes.push_back(box);
             }
         }
     }
+
     std::pair<bool, dae::GameObject*> returnValue{false,nullptr};
     for (CollisionBox box : validBoxes)
     {
@@ -68,7 +70,7 @@ std::pair<bool, dae::GameObject*> NVB_Collision_System::HasTrigger(const Collisi
 
 std::pair<bool, dae::GameObject*> NVB_Collision_System::RayCast(glm::vec2 rayStart, glm::vec2 rayEnd, std::vector<int> groupIDsToCollideWith)
 {
-    std::vector<CollisionBox> validBoxes;
+    std::vector<CollisionBox> validBoxes{};
     for (CollisionComponent* component : m_pAllCollisionBoxes)
     {
         CollisionBox box = component->GetCollisionBox();

@@ -16,6 +16,7 @@
 #include "ItemComponent.h"
 #include "SpawnComponent.h"
 #include "EnemyObserver.h"
+#include "LevelObserver.h"
 #include "DoorComponent.h"
 
 GridComponent::GridComponent(dae::GameObject* pOwner)
@@ -29,8 +30,28 @@ void GridComponent::InitializeGrid(int rowSize, int columnSize, float tileWidth,
 	m_ColumnSize = columnSize;
 	m_TileWidth = tileWidth;
 	m_TileHeight = tileHeight;
+}
+
+void GridComponent::AddLevel(std::string filePath)
+{
+	m_LevelFilePaths.push_back(filePath);
+}
+
+void GridComponent::GoToLevel(int levelIndex)
+{
+	if (levelIndex<m_LevelFilePaths.size())
+	{
+		m_currentLevel = levelIndex;
+		GetOwner()->DestroyAllChildren();
+		InitializeLevel(m_LevelFilePaths[levelIndex]);
+	}
+}
+
+void GridComponent::InitializeLevel(std::string filePath)
+{
+
 	int blockCollisionGroupID{ 2 };
-	std::vector<int>blockCollideWithIDs{ 1,3 };
+	std::vector<int>unBreakableBlockCollideWithIDs{ 1,3 };
 
 	for (int row = 0; row < m_RowSize; row++)
 	{
@@ -39,15 +60,15 @@ void GridComponent::InitializeGrid(int rowSize, int columnSize, float tileWidth,
 			Tile tile{};
 			tile.row = row;
 			tile.column = column;
-			tile.top = tileHeight * row;
-			tile.left = tileWidth * column;
+			tile.top = m_TileHeight * row;
+			tile.left = m_TileWidth * column;
 
-			if (row == 0 || row == rowSize-1 || column == 0 || column == columnSize-1 || (row % 2 == 0 && column % 2 == 0))
+			if (row == 0 || row == m_RowSize - 1 || column == 0 || column == m_ColumnSize - 1 || (row % 2 == 0 && column % 2 == 0))
 			{
 				tile.hasObjectThatStopsExplosion = true;
 				auto go_Block = std::make_shared<dae::GameObject>();
 				go_Block->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_TileWidth * column, m_TileWidth * row, 0.f));
-				go_Block->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), blockCollisionGroupID, blockCollideWithIDs);
+				go_Block->AddComponent<CollisionComponent>()->SetUpCollisionBox(static_cast<int>(m_TileWidth), static_cast<int>(m_TileHeight), blockCollisionGroupID, unBreakableBlockCollideWithIDs);
 				go_Block->GetComponent<CollisionComponent>()->SetIsStatic(true);
 				go_Block->SetParent(GetOwner()->shared_from_this(), true);
 			}
@@ -55,12 +76,10 @@ void GridComponent::InitializeGrid(int rowSize, int columnSize, float tileWidth,
 			m_Tiles.push_back(tile);
 		}
 	}
-}
 
-void GridComponent::InitializeLevel(std::string filePath, float textureScale)
-{
 	if (std::ifstream is{ filePath })
 	{
+		float textureScale{ 1.3f };
 		rapidjson::IStreamWrapper isw{ is };
 		rapidjson::Document level;
 		level.ParseStream(isw);
@@ -129,10 +148,10 @@ void GridComponent::InitializeLevel(std::string filePath, float textureScale)
 		}
 
 		go_Door->AddComponent<DoorComponent>()->SetAmountOfEnemy(amountOfEnemies);
+		go_Door->GetComponent<DoorComponent>()->AddObserver(new LevelObserver{ GetOwner() });
 
 		if (level.HasMember("blockInfo"))
 		{
-			int blockCollisionGroupID{ 2 };
 			std::vector<int>blockCollideWithIDs{ 1, 3 };
 			const rapidjson::Value& infoArray = level["blockInfo"];
 			for (rapidjson::Value::ConstValueIterator index = infoArray.Begin(); index != infoArray.End(); ++index)
@@ -247,4 +266,10 @@ bool GridComponent::IsAnUnBreakableTile(float xPos, float yPos)
 	}
 
 	return closest.hasObjectThatStopsExplosion;
+}
+
+void GridComponent::GoToNextLevel()
+{
+	++m_currentLevel;
+	GoToLevel(m_currentLevel);
 }

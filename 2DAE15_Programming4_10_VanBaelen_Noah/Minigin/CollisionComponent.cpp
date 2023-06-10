@@ -27,6 +27,11 @@ void CollisionComponent::Update(float /*deltaTime*/)
     }
 }
 
+void CollisionComponent::LateUpdate(float)
+{
+    if (GetOwner()->m_MarkedForDestroy) {RemoveCollisionBox();}
+}
+
 void CollisionComponent::SetUpCollisionBox(const int width, const int height, const int collisionGroupID, const std::vector<int> collisionGroupsToCollideWithIDs)
 {
     glm::vec3 position = GetOwner()->GetWorldPosition();

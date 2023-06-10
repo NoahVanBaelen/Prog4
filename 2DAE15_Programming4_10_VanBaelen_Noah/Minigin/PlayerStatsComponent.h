@@ -34,10 +34,9 @@ public:
 	void ResetPowerUpStats();
 	void StartNewGame();
 	void AddObserver(Observer* observer);
+	void ResetToStartPosition();
 
 private:
-
-	void ResetToStartPosition();
 
 	glm::vec2 m_StartPosition;
 	float m_Speed;

@@ -7,6 +7,10 @@ void BaseComponent::FixedUpdate(float)
 {
 }
 
+void BaseComponent::LateUpdate(float)
+{
+}
+
 void BaseComponent::Render() const
 {
 

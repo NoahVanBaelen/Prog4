@@ -216,6 +216,9 @@
     <ClInclude Include="EnemyObserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelObserver.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -375,6 +378,9 @@
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="EnemyObserver.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelObserver.cpp">
       <Filter>Source Files\Events</Filter>
     </ClCompile>
   </ItemGroup>

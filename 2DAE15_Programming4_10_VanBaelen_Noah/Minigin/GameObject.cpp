@@ -46,6 +46,11 @@ void dae::GameObject::Update(float deltaTime) //Update children
 
 void dae::GameObject::LateUpdate(float deltaTime)
 {
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_componentVector.size()); i++)
+	{
+		m_componentVector[i]->LateUpdate(deltaTime);
+	}
+
 	for (unsigned int i = 0; i < static_cast<unsigned int>(m_pChildren.size()); i++)
 	{
 		GetChildAt(i)->LateUpdate(deltaTime);
@@ -190,6 +195,14 @@ void dae::GameObject::RemoveChild(std::shared_ptr<GameObject> child)
 	child->MakeParentNull();
 
 	child->GetComponent<TransformComponent>()->SetPositionDirty();
+}
+
+void dae::GameObject::DestroyAllChildren()
+{
+	for (std::shared_ptr<dae::GameObject> child : m_pChildren)
+	{
+		child->m_MarkedForDestroy = true;
+	}
 }
 
 bool dae::GameObject::CheckIfNewParentIsOurChild(GameObject* currentParent) // recursieve keep checking our new parent his parents til we find ourself our a nullptr
