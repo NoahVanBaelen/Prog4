@@ -16,6 +16,7 @@ namespace dae
 		void FixedUpdate(float fixedTimeStep);
 		void Update(float deltaTime);
 		void Render();
+		void SetActiveScene(const std::string& name);
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;

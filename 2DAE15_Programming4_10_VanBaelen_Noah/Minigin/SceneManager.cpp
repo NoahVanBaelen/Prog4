@@ -33,6 +33,18 @@ void dae::SceneManager::Render()
 	}
 }
 
+void dae::SceneManager::SetActiveScene(const std::string& name)
+{
+	for (std::shared_ptr<Scene> scene : m_scenes)
+	{
+		scene->SetSceneActive(false);
+		if (scene->GetName() == name)
+		{
+			scene->SetSceneActive(true);
+		}
+	}
+}
+
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 {
 	const auto& scene = std::shared_ptr<Scene>(new Scene(name));

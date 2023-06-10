@@ -17,6 +17,9 @@ namespace dae
 		void Update(float deltaTime);
 		void Render() const;
 
+		std::string GetName() const;
+		void SetSceneActive(bool isActive);
+
 		~Scene();
 		Scene(const Scene& other) = delete;
 		Scene(Scene&& other) = delete;
@@ -28,6 +31,7 @@ namespace dae
 
 		std::string m_name;
 		std::vector < std::shared_ptr<GameObject>> m_objects{};
+		bool m_IsActive{false};
 
 		static unsigned int m_idCounter; 
 	};

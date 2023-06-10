@@ -26,6 +26,11 @@ void Scene::RemoveAll()
 
 void dae::Scene::LateUpdate(float deltaTime)
 {
+	if (!m_IsActive)
+	{
+		return;
+	}
+
 	for (auto& object : m_objects)
 	{
 		object->LateUpdate(deltaTime);
@@ -38,6 +43,11 @@ void dae::Scene::LateUpdate(float deltaTime)
 
 void dae::Scene::FixedUpdate(float fixedTimeStep)
 {
+	if (!m_IsActive)
+	{
+		return;
+	}
+
 	for (auto& object : m_objects)
 	{
 		object->FixedUpdate(fixedTimeStep);
@@ -46,6 +56,11 @@ void dae::Scene::FixedUpdate(float fixedTimeStep)
 
 void Scene::Update(float deltaTime)
 {
+	if (!m_IsActive)
+	{
+		return;
+	}
+
 	for(auto& object : m_objects)
 	{
 		object->Update(deltaTime);
@@ -54,9 +69,24 @@ void Scene::Update(float deltaTime)
 
 void Scene::Render() const
 {
+	if (!m_IsActive)
+	{
+		return;
+	}
+
 	for (const auto& object : m_objects)
 	{
 		object->Render();
 	}
+}
+
+std::string dae::Scene::GetName() const
+{
+	return m_name;
+}
+
+void dae::Scene::SetSceneActive(bool isActive)
+{
+	m_IsActive = isActive;
 }
 
