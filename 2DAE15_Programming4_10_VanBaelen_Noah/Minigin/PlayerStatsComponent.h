@@ -11,6 +11,7 @@ public:
 	PlayerStatsComponent& operator=(const  PlayerStatsComponent& other) = delete;
 	PlayerStatsComponent& operator=(PlayerStatsComponent&& other) = delete;
 
+	void Update(float deltaTime) override;
 	void SetStartPosition(glm::vec2 startPosition);
 
 	float GetSpeed() const;
@@ -19,6 +20,8 @@ public:
 	int GetMaxBombs() const;
 	int GetCurrentBombs() const;
 	int GetFirePower() const;
+	int GetSpeedCount() const;
+	bool GetCanDetonateEarly()const;
 
 	void DetonateEarly() const;
 
@@ -46,6 +49,14 @@ private:
 	int m_CurrentAmountOfBombs;//amount of bombs that are currently placed
 	int m_FirePower;
 	bool m_AllowToDetonateBombEarly;
+	int m_SpeedCount{ 0 };
+
+	bool m_GotHurt{false};
+	bool m_GotSomeThing{ false };
+
+	float m_MaxWaitTime{ 5.0f };
+	float m_CurrentCanPickUpTime{ 0 };
+	float m_CurrentCanGetHurtAgainTime{ 0 };
 
 	std::unique_ptr<Subject> m_Subjects = std::make_unique<Subject>();
 };

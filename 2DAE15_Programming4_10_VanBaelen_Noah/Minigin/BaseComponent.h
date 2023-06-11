@@ -2,7 +2,7 @@
 #include <memory>
 #include "GameObject.h"
 #include <iostream>
-//class GameObject;
+
 class BaseComponent
 {
 	dae::GameObject* m_pOwner{nullptr};

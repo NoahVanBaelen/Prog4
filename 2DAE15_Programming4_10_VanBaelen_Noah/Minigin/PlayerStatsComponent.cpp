@@ -7,6 +7,27 @@ PlayerStatsComponent::PlayerStatsComponent(dae::GameObject* pOwner)
     StartNewGame();
 }
 
+void PlayerStatsComponent::Update(float deltaTime)
+{
+    if (m_GotSomeThing)//to prevent getting called every frame
+    {
+        m_CurrentCanPickUpTime += deltaTime * 0.01f;
+        if (m_CurrentCanPickUpTime >= m_MaxWaitTime)
+        {
+            m_GotSomeThing = false;
+        }
+    }
+
+    if (m_GotHurt) // to prevent getting called every frame
+    {
+        m_CurrentCanGetHurtAgainTime += deltaTime * 0.01f;
+        if (m_CurrentCanGetHurtAgainTime >= m_MaxWaitTime)
+        {
+            m_GotHurt = false;
+        }
+    }
+}
+
 void PlayerStatsComponent::SetStartPosition(glm::vec2 startPosition)
 {
     m_StartPosition = startPosition;
@@ -42,6 +63,16 @@ int PlayerStatsComponent::GetFirePower() const
     return m_FirePower;
 }
 
+int PlayerStatsComponent::GetSpeedCount() const
+{
+    return m_SpeedCount;
+}
+
+bool PlayerStatsComponent::GetCanDetonateEarly() const
+{
+    return m_AllowToDetonateBombEarly;
+}
+
 void PlayerStatsComponent::DetonateEarly() const
 {
     if (m_AllowToDetonateBombEarly)
@@ -52,7 +83,11 @@ void PlayerStatsComponent::DetonateEarly() const
 
 void PlayerStatsComponent::IncreaseSpeed(float speedIncrease)
 {
+    if (m_GotSomeThing) { return; };
     m_Speed += speedIncrease;
+    ++m_SpeedCount;
+    m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
+    m_GotSomeThing = true;
 }
 
 void PlayerStatsComponent::IncreasePoints(int points)
@@ -62,14 +97,20 @@ void PlayerStatsComponent::IncreasePoints(int points)
 
 void PlayerStatsComponent::DecreaseLives()
 {
+    if (m_GotHurt) { return; };
     --m_Lives;
+    m_Subjects->NotifyObservers(Observer::Event::PLAYER_DIES, GetOwner());
     ResetPowerUpStats();
     ResetToStartPosition();
+    m_GotHurt = true;
 }
 
 void PlayerStatsComponent::IncreaseMaxBombs()
 {
+    if (m_GotSomeThing) { return; };
     ++m_MaxAmountOfBombs;
+    m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
+    m_GotSomeThing = true;
 }
 
 void PlayerStatsComponent::IncreaseCurrentBombs()
@@ -88,27 +129,36 @@ void PlayerStatsComponent::DecreaseCurrentBombs()
 
 void PlayerStatsComponent::IncreaseFirePower()
 {
+    if (m_GotSomeThing) { return; };
     ++m_FirePower;
+    m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
+    m_GotSomeThing = true;
 }
 
 void PlayerStatsComponent::AllowEarlyDetonation()
 {
+    if (m_GotSomeThing) { return; };
     m_AllowToDetonateBombEarly = true;
+    m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
+    m_GotSomeThing = true;
 }
 
 void PlayerStatsComponent::ResetPowerUpStats()
 {
     m_Speed = 0.08f;
+    m_SpeedCount = 0;
     m_MaxAmountOfBombs = 1;
     m_CurrentAmountOfBombs = 0;
     m_FirePower = 1;
     m_AllowToDetonateBombEarly = false;
+    m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
 }
 
 void PlayerStatsComponent::StartNewGame()
 {
     m_Points = 0;
     m_Lives = 3;
+    m_Subjects->NotifyObservers(Observer::Event::PLAYER_RESET_LIVES, GetOwner());
     ResetPowerUpStats();
 }
 
