@@ -63,7 +63,7 @@ void GridComponent::GoToLevel(int levelIndex)
 		dae::SceneManager::GetInstance().SetState(std::make_shared<MainMenuState>(dae::SceneManager::GetInstance().GetSceneByName("MainMenu").get()));
 	}
 
-	if (levelIndex<m_LevelFilePaths.size())
+	if (levelIndex < static_cast<int>(m_LevelFilePaths.size()))
 	{
 		m_currentLevel = levelIndex;
 		GetOwner()->DestroyAllChildren();
@@ -301,7 +301,7 @@ bool GridComponent::IsAnUnBreakableTile(float xPos, float yPos)
 
 	if (closest.hasBreakableBlockOnTile)
 	{
-		closest.block->m_MarkedForDestroy = true;
+		closest.block->MarkForDestroy();
 		closest.block->GetComponent<CollisionComponent>()->RemoveCollisionBox();
 
 		if (closest.block->HasComponent<SpawnComponent>())//spawnItem

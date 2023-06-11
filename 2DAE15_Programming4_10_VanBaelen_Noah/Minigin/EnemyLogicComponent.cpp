@@ -177,7 +177,7 @@ void EnemyLogicComponent::GetKilled()
 {
 	m_Subjects->NotifyObservers(Observer::Event::ENEMY_DIES, GetOwner());
 	GetOwner()->GetComponent<CollisionComponent>()->RemoveCollisionBox();
-	GetOwner()->m_MarkedForDestroy = true;
+	GetOwner()->MarkForDestroy();
 }
 
 void EnemyLogicComponent::AddObserver(Observer* observer)

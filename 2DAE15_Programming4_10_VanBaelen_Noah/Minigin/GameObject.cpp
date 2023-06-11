@@ -85,30 +85,6 @@ void dae::GameObject::MakeParentNull()
 	m_pParent.reset();
 }
 
-//void dae::GameObject::SetParent(std::shared_ptr<GameObject> parent, bool keepWorldPosition)
-//{
-//	if (m_parent != nullptr)
-//	{
-//		m_parent = parent;
-//		m_pTransforComponent->SetPositionDirty();
-//
-//		if (keepWorldPosition)
-//		{
-//			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_parent->GetWorldPosition());
-//		}
-//	}
-//	else
-//	{
-//		m_parent = parent;
-//		m_pTransforComponent->SetPositionDirty();
-//
-//		if (keepWorldPosition)
-//		{
-//			m_pTransforComponent->SetLocalPosition(m_pTransforComponent->GetLocalPosition() - m_parent->GetWorldPosition());
-//		}
-//	}
-//}
-//
 int dae::GameObject::GetChildCount() const
 {
 	return static_cast<int>(m_pChildren.size());
@@ -122,39 +98,6 @@ std::shared_ptr<dae::GameObject> dae::GameObject::GetChildAt(int index) const
 	}
 	return nullptr;
 }
-//
-//std::shared_ptr<dae::GameObject> dae::GameObject::GetChildAt(int index) const
-//{
-//	if (index < GetChildCount())
-//	{
-//		return m_children[index];
-//	}
-//	return nullptr;
-//}
-//
-//void dae::GameObject::AddChild(std::shared_ptr<dae::GameObject> child, bool keepWorldPosition)
-//{
-//	if (!child->CheckIfNewParentIsOurChild(this))//Check if the new parent is one of your children/grandchildren our if our new parent this gameobject is
-//	{
-//		if (child->GetParent() != nullptr)
-//		{
-//			child->GetParent()->RemoveChild(child);
-//		}
-//
-//		child->SetParent(std::make_shared<dae::GameObject>(*this), keepWorldPosition);
-//		m_children.emplace_back(std::move(child));
-//	}
-//}
-
-//void dae::GameObject::AddChild(std::shared_ptr<dae::GameObject> child)
-//{
-//	m_children.emplace_back(std::move(child));
-//}
-
-//void dae::GameObject::RemoveChild(std::shared_ptr<dae::GameObject> child)
-//{
-//	m_children.erase(std::remove(m_children.begin(), m_children.end(), child), m_children.end());
-//}
 
 void dae::GameObject::SetParent(std::shared_ptr<GameObject> newParent, bool keepWorldPosition)
 {
@@ -203,6 +146,16 @@ void dae::GameObject::DestroyAllChildren()
 	{
 		child->m_MarkedForDestroy = true;
 	}
+}
+
+void dae::GameObject::MarkForDestroy()
+{
+	m_MarkedForDestroy = true;
+}
+
+bool dae::GameObject::GetIsMarkedForDestroy() const
+{
+	return m_MarkedForDestroy;
 }
 
 bool dae::GameObject::CheckIfNewParentIsOurChild(GameObject* currentParent) // recursieve keep checking our new parent his parents til we find ourself our a nullptr

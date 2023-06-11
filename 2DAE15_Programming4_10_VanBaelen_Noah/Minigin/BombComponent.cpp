@@ -22,7 +22,7 @@ void BombComponent::Update(float deltaTime)
 		m_Subjects->NotifyObservers(Observer::Event::BOMB_EXPLODED, GetOwner());
 		auto& ss = Servicelocator::get_sound_system();
 		ss.play(static_cast<sound_id>(m_SoundID), 30);
-		GetOwner()->m_MarkedForDestroy = true;
+		GetOwner()->MarkForDestroy();
 	}
 }
 

@@ -31,7 +31,7 @@ void ItemComponent::Update(float)
 			default:
 				break;
 			}
-			GetOwner()->m_MarkedForDestroy = true;
+			GetOwner()->MarkForDestroy();
 		}
 	}
 }

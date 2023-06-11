@@ -23,7 +23,7 @@ void HighScoreListComponent::SetHighScoreList()
 
 	int indexHighScore{ static_cast<int>(m_Scores.size()) };
 
-	for (int i = 0; i < m_Scores.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_Scores.size()); i++)
 	{
 		if (m_Scores[i] < m_Score)
 		{
@@ -31,7 +31,7 @@ void HighScoreListComponent::SetHighScoreList()
 		}
 	}
 
-	if (indexHighScore != m_Scores.size())
+	if (indexHighScore != static_cast<int>(m_Scores.size()))
 	{
 		int NewValue{ m_Score };
 		int OldValue{};
@@ -44,7 +44,7 @@ void HighScoreListComponent::SetHighScoreList()
 	}
 	std::reverse(m_Scores.begin(), m_Scores.end());//becose we write a file from the top
 
-	for (int i = 0; i < m_Scores.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_Scores.size()); i++)
 	{
 		if (i == static_cast<int>(m_Scores.size()-1))
 		{

@@ -5,7 +5,7 @@
 
 class BaseComponent
 {
-	dae::GameObject* m_pOwner{nullptr};
+	dae::GameObject* m_pOwner{ nullptr };
 public:
 	BaseComponent() = default;
 	virtual void Update(float);
@@ -19,7 +19,7 @@ public:
 	BaseComponent& operator=(const BaseComponent& other) = delete;
 	BaseComponent& operator=(BaseComponent&& other) = delete;
 protected:
-	explicit BaseComponent(dae::GameObject* pOwner){
+	explicit BaseComponent(dae::GameObject* pOwner) {
 		m_pOwner = pOwner;
 	}
 	dae::GameObject* GetOwner() const { return m_pOwner; }

@@ -115,12 +115,12 @@ MoveInListDownCommand::MoveInListDownCommand(std::shared_ptr<dae::GameObject> ic
 
 void MoveInListDownCommand::Execute(float)
 {
-	for (int i = 0; i < m_Positions.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_Positions.size()); i++)
 	{
 		glm::vec2 iconPosition{ m_pIcon->GetWorldPosition() };
 		if (iconPosition.x == m_Positions[i].x && iconPosition.y == m_Positions[i].y)
 		{
-			if (i + 1 < m_Positions.size())
+			if (i + 1 < static_cast<int>(m_Positions.size()))
 			{
 				int newIndex{ i + 1 };
 				m_pIcon->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_Positions[newIndex].x, m_Positions[newIndex].y, 0));
@@ -139,7 +139,7 @@ MoveInListUpCommand::MoveInListUpCommand(std::shared_ptr<dae::GameObject> icon, 
 
 void MoveInListUpCommand::Execute(float)
 {
-	for (int i = 0; i < m_Positions.size(); i++)
+	for (int i = 0; i < static_cast<int>(m_Positions.size()); i++)
 	{
 		glm::vec2 iconPosition{ m_pIcon->GetWorldPosition() };
 		if (iconPosition.x == m_Positions[i].x && iconPosition.y == m_Positions[i].y)

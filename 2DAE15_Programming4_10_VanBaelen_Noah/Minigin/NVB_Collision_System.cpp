@@ -16,7 +16,7 @@ std::pair<int,int> NVB_Collision_System::HasCollision(CollisionComponent* collis
         CollisionBox box = component->GetCollisionBox();
         if (box.pOwner != ourCollisionBox.pOwner)//make sure we dont add Collisionboxes that are owned by the same gameobject
         {
-            for (int i = 0; i < ourCollisionBox.groupIdToCollideWith.size(); i++) //go through all boxes and add the only ones we can collide with
+            for (int i = 0; i < static_cast<int>(ourCollisionBox.groupIdToCollideWith.size()); i++) //go through all boxes and add the only ones we can collide with
             {
                 if (box.collisionGroupID == ourCollisionBox.groupIdToCollideWith[i])
                 {
@@ -45,7 +45,7 @@ std::pair<bool, dae::GameObject*> NVB_Collision_System::HasTrigger(const Collisi
     for (CollisionComponent* component : m_pAllCollisionBoxes)
     {
         CollisionBox box = component->GetCollisionBox();
-        for (int j = 0; j < ourCollisionBox.groupIdToCollideWith.size(); j++) //go through all boxes and add the only ones we can trigger with
+        for (int j = 0; j < static_cast<int>(ourCollisionBox.groupIdToCollideWith.size()); j++) //go through all boxes and add the only ones we can trigger with
         {
             if (box.collisionGroupID == ourCollisionBox.groupIdToCollideWith[j])
             {
@@ -74,7 +74,7 @@ std::pair<bool, dae::GameObject*> NVB_Collision_System::RayCast(glm::vec2 raySta
     for (CollisionComponent* component : m_pAllCollisionBoxes)
     {
         CollisionBox box = component->GetCollisionBox();
-        for (int i = 0; i < groupIDsToCollideWith.size(); i++) //go through all boxes and add the only ones we can trigger with
+        for (int i = 0; i < static_cast<int>(groupIDsToCollideWith.size()); i++) //go through all boxes and add the only ones we can trigger with
         {
             if (box.collisionGroupID == groupIDsToCollideWith[i])
             {

@@ -29,7 +29,7 @@ void dae::Scene::LateUpdate(float deltaTime)
 	for (auto& object : m_objects)
 	{
 		object->LateUpdate(deltaTime);
-		if (object->m_MarkedForDestroy)//needs to put in a apart list
+		if (object->GetIsMarkedForDestroy())
 		{
 			Remove(object);
 		}

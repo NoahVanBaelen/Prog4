@@ -80,13 +80,16 @@ namespace dae
 			return false;
 		}
 
-		bool m_MarkedForDestroy{ false };
-
 		void SetParent(std::shared_ptr<GameObject> newParent, bool keepWorldPosition);
 		void RemoveChild(std::shared_ptr<GameObject> child);
 		void DestroyAllChildren();
+		void MarkForDestroy();
+		bool GetIsMarkedForDestroy() const;
 
 	private:
+
+		bool m_MarkedForDestroy{ false };
+
 		void AddChild(std::shared_ptr<GameObject> child);
 		bool CheckIfNewParentIsOurChild(GameObject* currentParent);
 
