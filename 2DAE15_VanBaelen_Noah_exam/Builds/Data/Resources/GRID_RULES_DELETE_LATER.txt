@@ -1,0 +1,4 @@
+Height 0-12
+Width 0-30
+
+Beide the Height als de Width mogen beiden niet een even zijn

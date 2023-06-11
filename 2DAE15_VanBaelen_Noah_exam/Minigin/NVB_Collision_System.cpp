@@ -101,7 +101,7 @@ std::pair<bool, dae::GameObject*> NVB_Collision_System::RayCast(glm::vec2 raySta
     return returnValue;
 }
 
-bool NVB_Collision_System::AreBoxesOverlapping(const CollisionBox& box1, const CollisionBox& box2)
+bool NVB_Collision_System::AreBoxesOverlapping(const CollisionBox& box1, const CollisionBox& box2) //Calculations provided bij ChatGPT
 {
     int left1 = static_cast<int>(box1.centerPosition.x) - box1.widthBox / 2;
     int right1 = static_cast<int>(box1.centerPosition.x) + box1.widthBox / 2;
@@ -135,7 +135,7 @@ bool NVB_Collision_System::AreBoxesOverlapping(const CollisionBox& box1, const C
     return false;
 }
 
-bool NVB_Collision_System::IsLineAndBoxOverlapping(const glm::vec2& start, const glm::vec2& end, const CollisionBox& box)
+bool NVB_Collision_System::IsLineAndBoxOverlapping(const glm::vec2& start, const glm::vec2& end, const CollisionBox& box)//Calculations provided bij ChatGPT
 {
     int minX{};
     int maxX{};
@@ -177,7 +177,7 @@ bool NVB_Collision_System::IsLineAndBoxOverlapping(const glm::vec2& start, const
     return false;
 }
 
-std::pair<int, int> NVB_Collision_System::CalculateOffset(const CollisionBox& box1, const CollisionBox& box2)
+std::pair<int, int> NVB_Collision_System::CalculateOffset(const CollisionBox& box1, const CollisionBox& box2)//Calculations provided bij ChatGPT
 {
     std::pair<int, int>offset{};
 
@@ -221,7 +221,7 @@ std::pair<int, int> NVB_Collision_System::CalculateOffset(const CollisionBox& bo
     return offset;
 }
 
-bool NVB_Collision_System::CompareBoxesByDistance(const CollisionBox& box1, const CollisionBox& box2, const glm::vec2& rayStart)
+bool NVB_Collision_System::CompareBoxesByDistance(const CollisionBox& box1, const CollisionBox& box2, const glm::vec2& rayStart)//Calculations provided bij ChatGPT
 {
     float distance1 = glm::distance(rayStart, box1.centerPosition);
     float distance2 = glm::distance(rayStart, box2.centerPosition);
