@@ -2,6 +2,7 @@
 #include "TransformComponent.h"
 #include "TriggerComponent.h"
 #include "PlayerStatsComponent.h"
+#include "RenderComponent.h"
 
 VersusPlayerComponent::VersusPlayerComponent(dae::GameObject* pOwner)
 	:BaseComponent(pOwner)
@@ -17,6 +18,7 @@ void VersusPlayerComponent::Update(float deltaTime)
 		{
 			m_WaitTimeCurrent = 0;
 			m_GotKilled = false;
+			GetOwner()->GetComponent<RenderComponent>()->SetCanRender(true);
 		}
 	}
 	else
@@ -46,6 +48,7 @@ void VersusPlayerComponent::ResetToStartPosition()
 void VersusPlayerComponent::GetKilled()
 {
 	m_GotKilled = true;
+	GetOwner()->GetComponent<RenderComponent>()->SetCanRender(false);
 	ResetToStartPosition();
 }
 

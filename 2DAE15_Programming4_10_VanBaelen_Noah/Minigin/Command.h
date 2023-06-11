@@ -80,3 +80,10 @@ private:
 	int m_PositionYMode2{};
 	int m_PositionYMode3{};
 };
+
+class GoToMainMenuCommand final : public Command
+{
+public:
+	GoToMainMenuCommand();
+	void Execute(float deltaTime) override;
+};

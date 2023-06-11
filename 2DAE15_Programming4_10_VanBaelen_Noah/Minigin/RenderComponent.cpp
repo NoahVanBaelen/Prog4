@@ -13,6 +13,8 @@ RenderComponent::RenderComponent(dae::GameObject* pOwner)
 
 void RenderComponent::Render() const
 {
+
+	if (!m_CanRender) {return;}
 	if (m_pTexture != nullptr)
 	{
 		if (m_UseTextureVector)
@@ -93,4 +95,9 @@ void RenderComponent::ScaleTexture(const float scale)
 {
 	m_width = static_cast<int>(m_width * scale);
 	m_height = static_cast<int>(m_height * scale);
+}
+
+void RenderComponent::SetCanRender(bool canRender)
+{
+	m_CanRender = canRender;
 }

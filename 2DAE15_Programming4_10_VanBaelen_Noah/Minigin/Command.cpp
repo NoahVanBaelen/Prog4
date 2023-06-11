@@ -35,7 +35,7 @@ MoveCommand::MoveCommand(dae::GameObject* gameObject, glm::vec3 direction)
 void MoveCommand::Execute(float deltaTime)
 {
 	glm::vec3 newMovement{};
-	if (m_pGameObject->HasComponent<PlayerStatsComponent>())
+	if (m_pGameObject->HasComponent<PlayerStatsComponent>() && !m_pGameObject->GetComponent<PlayerStatsComponent>()->GetIsDead())
 	{
 		newMovement = m_Direction * (m_pGameObject->GetComponent<PlayerStatsComponent>()->GetSpeed() * deltaTime);
 	}
@@ -62,7 +62,7 @@ SpawnBombCommand::SpawnBombCommand(std::shared_ptr<dae::GameObject> player, std:
 
 void SpawnBombCommand::Execute(float)
 {
-	if (m_pPlayer->GetComponent<PlayerStatsComponent>()->GetCurrentBombs() < m_pPlayer->GetComponent<PlayerStatsComponent>()->GetMaxBombs())
+	if (m_pPlayer->GetComponent<PlayerStatsComponent>()->GetCurrentBombs() < m_pPlayer->GetComponent<PlayerStatsComponent>()->GetMaxBombs() && !m_pPlayer->GetComponent<PlayerStatsComponent>()->GetIsDead())
 	{
 		m_pPlayer->GetComponent<PlayerStatsComponent>()->IncreaseCurrentBombs();
 		auto& ss = Servicelocator::get_sound_system();
@@ -100,7 +100,10 @@ DetonateBombCommand::DetonateBombCommand(std::shared_ptr<dae::GameObject> player
 
 void DetonateBombCommand::Execute(float)
 {
-	m_pPlayer->GetComponent<PlayerStatsComponent>()->DetonateEarly();
+	if (!m_pPlayer->GetComponent<PlayerStatsComponent>()->GetIsDead())
+	{
+		m_pPlayer->GetComponent<PlayerStatsComponent>()->DetonateEarly();
+	}
 }
 
 MoveInListDownCommand::MoveInListDownCommand(std::shared_ptr<dae::GameObject> icon, std::vector<glm::vec2> positions)
@@ -168,16 +171,26 @@ void SelectModeCommand::Execute(float)
 	m_pGrid->GetComponent<GridComponent>()->GoToStartLevel();
 	if (static_cast<int>(iconPosition.y) == m_PositionYMode1)
 	{
-		sceneManager.SetState(std::make_shared<SinglePlayerState>(sceneManager.GetSceneByName("SinglePlayer").get(), sceneManager.GetState()->GetCommandVector()));
+		sceneManager.SetState(std::make_shared<SinglePlayerState>(sceneManager.GetSceneByName("SinglePlayer").get()));
 	}
 
 	if (static_cast<int>(iconPosition.y) == m_PositionYMode2)
 	{
-		sceneManager.SetState(std::make_shared<CoopState>(sceneManager.GetSceneByName("Coop").get(), sceneManager.GetState()->GetCommandVector()));
+		sceneManager.SetState(std::make_shared<CoopState>(sceneManager.GetSceneByName("Coop").get()));
 	}
 
 	if (static_cast<int>(iconPosition.y) == m_PositionYMode3)
 	{
-		sceneManager.SetState(std::make_shared<VersusState>(sceneManager.GetSceneByName("Versus").get(), sceneManager.GetState()->GetCommandVector()));
+		sceneManager.SetState(std::make_shared<VersusState>(sceneManager.GetSceneByName("Versus").get()));
 	}
+}
+
+GoToMainMenuCommand::GoToMainMenuCommand()
+{
+}
+
+void GoToMainMenuCommand::Execute(float)
+{
+	auto& sceneManager = dae::SceneManager::GetInstance();
+	sceneManager.SetState(std::make_shared<MainMenuState>(sceneManager.GetSceneByName("MainMenu").get()));
 }

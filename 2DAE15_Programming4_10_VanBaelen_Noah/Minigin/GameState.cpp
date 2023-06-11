@@ -4,10 +4,9 @@
 #include "CommandKeeper.h"
 #include "Input.h"
 
-MainMenuState::MainMenuState(dae::Scene* scene, std::vector<std::pair<int, std::shared_ptr<CommandKeeper>>> commandVector)
+MainMenuState::MainMenuState(dae::Scene* scene)
 	:m_pScene{ scene }
 {
-	m_pCommandVector = commandVector;
 }
 
 void MainMenuState::LateUpdate(float deltaTime)
@@ -30,31 +29,6 @@ void MainMenuState::Render()
 	m_pScene->Render();
 }
 
-void MainMenuState::OnEnter()
-{
-	for (int i = 0; i < m_pCommandVector.size(); i++)
-	{
-		if (m_pCommandVector[i].first == 0)
-		{
-			auto& input = Input::GetInstance();
-			std::shared_ptr<CommandKeeper> keeper = m_pCommandVector[i].second;
-			if (keeper->UsesKey())
-			{
-				input.AddCommand(keeper->GetKey(), keeper->GetLogic(), keeper->GetCommand());
-			}
-			else
-			{
-				input.AddCommand(keeper->GetControllerIndex(), keeper->GetButton(), keeper->GetLogic(), keeper->GetCommand());
-			}
-		}
-	}
-}
-
-void MainMenuState::OnExit()
-{
-	Input::GetInstance().RemoveAllCommands();
-}
-
 GameState::CurrentMode MainMenuState::GetCurrentMode()
 {
 	return CurrentMode::MAIN_MENU;
@@ -62,10 +36,9 @@ GameState::CurrentMode MainMenuState::GetCurrentMode()
 
 
 
-SinglePlayerState::SinglePlayerState(dae::Scene* scene, std::vector<std::pair<int, std::shared_ptr<CommandKeeper>>> commandVector)
+SinglePlayerState::SinglePlayerState(dae::Scene* scene)
 	:m_pScene{ scene }
 {
-	m_pCommandVector = commandVector;
 }
 
 void SinglePlayerState::LateUpdate(float deltaTime)
@@ -88,40 +61,14 @@ void SinglePlayerState::Render()
 	m_pScene->Render();
 }
 
-void SinglePlayerState::OnEnter()
-{
-	for (int i = 0; i < m_pCommandVector.size(); i++)
-	{
-		if (m_pCommandVector[i].first == 1)
-		{
-			auto& input = Input::GetInstance();
-			std::shared_ptr<CommandKeeper> keeper = m_pCommandVector[i].second;
-			if (keeper->UsesKey())
-			{
-				input.AddCommand(keeper->GetKey(), keeper->GetLogic(), keeper->GetCommand());
-			}
-			else
-			{
-				input.AddCommand(keeper->GetControllerIndex(), keeper->GetButton(), keeper->GetLogic(), keeper->GetCommand());
-			}
-		}
-	}
-}
-
-void SinglePlayerState::OnExit()
-{
-	Input::GetInstance().RemoveAllCommands();
-}
-
 GameState::CurrentMode SinglePlayerState::GetCurrentMode()
 {
 	return CurrentMode::SINGLE_PLAYER;
 }
 
-CoopState::CoopState(dae::Scene* scene, std::vector<std::pair<int, std::shared_ptr<CommandKeeper>>> commandVector)
+CoopState::CoopState(dae::Scene* scene)
 	:m_pScene{ scene }
 {
-	m_pCommandVector = commandVector;
 }
 
 void CoopState::LateUpdate(float deltaTime)
@@ -144,40 +91,14 @@ void CoopState::Render()
 	m_pScene->Render();
 }
 
-void CoopState::OnEnter()
-{
-	for (int i = 0; i < m_pCommandVector.size(); i++)
-	{
-		if (m_pCommandVector[i].first == 2)
-		{
-			auto& input = Input::GetInstance();
-			std::shared_ptr<CommandKeeper> keeper = m_pCommandVector[i].second;
-			if (keeper->UsesKey())
-			{
-				input.AddCommand(keeper->GetKey(), keeper->GetLogic(), keeper->GetCommand());
-			}
-			else
-			{
-				input.AddCommand(keeper->GetControllerIndex(), keeper->GetButton(), keeper->GetLogic(), keeper->GetCommand());
-			}
-		}
-	}
-}
-
-void CoopState::OnExit()
-{
-	Input::GetInstance().RemoveAllCommands();
-}
-
 GameState::CurrentMode CoopState::GetCurrentMode()
 {
 	return CurrentMode::COOP;
 }
 
-VersusState::VersusState(dae::Scene* scene, std::vector<std::pair<int, std::shared_ptr<CommandKeeper>>> commandVector)
+VersusState::VersusState(dae::Scene* scene)
 	:m_pScene{ scene }
 {
-	m_pCommandVector = commandVector;
 }
 
 void VersusState::LateUpdate(float deltaTime)
@@ -200,37 +121,37 @@ void VersusState::Render()
 	m_pScene->Render();
 }
 
-void VersusState::OnEnter()
-{
-	for (int i = 0; i < m_pCommandVector.size(); i++)
-	{
-		if (m_pCommandVector[i].first == 3)
-		{
-			auto& input = Input::GetInstance();
-			std::shared_ptr<CommandKeeper> keeper = m_pCommandVector[i].second;
-			if (keeper->UsesKey())
-			{
-				input.AddCommand(keeper->GetKey(), keeper->GetLogic(), keeper->GetCommand());
-			}
-			else
-			{
-				input.AddCommand(keeper->GetControllerIndex(), keeper->GetButton(), keeper->GetLogic(), keeper->GetCommand());
-			}
-		}
-	}
-}
-
-void VersusState::OnExit()
-{
-	Input::GetInstance().RemoveAllCommands();
-}
-
 GameState::CurrentMode VersusState::GetCurrentMode()
 {
 	return CurrentMode::VERSUS;
 }
 
-std::vector<std::pair<int, std::shared_ptr<CommandKeeper>>> GameState::GetCommandVector()
+ScoreScreenState::ScoreScreenState(dae::Scene* scene)
+	:m_pScene{ scene }
 {
-	return m_pCommandVector;
+}
+
+void ScoreScreenState::LateUpdate(float deltaTime)
+{
+	m_pScene->LateUpdate(deltaTime);
+}
+
+void ScoreScreenState::FixedUpdate(float fixedTimeStep)
+{
+	m_pScene->FixedUpdate(fixedTimeStep);
+}
+
+void ScoreScreenState::Update(float deltaTime)
+{
+	m_pScene->Update(deltaTime);
+}
+
+void ScoreScreenState::Render()
+{
+	m_pScene->Render();
+}
+
+GameState::CurrentMode ScoreScreenState::GetCurrentMode()
+{
+	return CurrentMode::SCORELIST;
 }

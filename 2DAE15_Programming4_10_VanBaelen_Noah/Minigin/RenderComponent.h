@@ -31,6 +31,7 @@ public:
 	int GetTextureHeight();
 	void ScaleTexture(const float scale);
 
+	void SetCanRender(bool canRender);
 
 private:
 
@@ -44,5 +45,6 @@ private:
 	int m_width{};
 	int m_height{};
 	bool m_UseTextureVector{ false };
+	bool m_CanRender{ true };
 };
 

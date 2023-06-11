@@ -15,7 +15,6 @@ public:
 	void SetStartPosition(glm::vec2 startPosition);
 
 	float GetSpeed() const;
-	int GetPoints() const;
 	int GetLives() const;
 	int GetMaxBombs() const;
 	int GetCurrentBombs() const;
@@ -26,7 +25,6 @@ public:
 	void DetonateEarly() const;
 
 	void IncreaseSpeed(float speedIncrease);
-	void IncreasePoints(int points);
 	void DecreaseLives();
 	void IncreaseMaxBombs();
 	void IncreaseCurrentBombs();
@@ -39,11 +37,12 @@ public:
 	void AddObserver(Observer* observer);
 	void ResetToStartPosition();
 
+	bool GetIsDead() const;
+
 private:
 
 	glm::vec2 m_StartPosition;
 	float m_Speed;
-	int m_Points;
 	int m_Lives;
 	int m_MaxAmountOfBombs;//max amount of bombs you may place
 	int m_CurrentAmountOfBombs;//amount of bombs that are currently placed
@@ -51,10 +50,12 @@ private:
 	bool m_AllowToDetonateBombEarly;
 	int m_SpeedCount{ 0 };
 
-	bool m_GotHurt{false};
+	bool m_GotHurt{ false };
 	bool m_GotSomeThing{ false };
+	bool m_IsDead{ false };
 
-	float m_MaxWaitTime{ 5.0f };
+	float m_MaxWaitPickUpTime{ 5.0f };
+	float m_MaxWaitHurtTime{ 10.0f };
 	float m_CurrentCanPickUpTime{ 0 };
 	float m_CurrentCanGetHurtAgainTime{ 0 };
 

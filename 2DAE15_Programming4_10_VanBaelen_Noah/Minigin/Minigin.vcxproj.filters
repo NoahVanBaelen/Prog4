@@ -240,6 +240,9 @@
     <ClInclude Include="PlayerObserver.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
+    <ClInclude Include="CoopLogicComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -418,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="PlayerObserver.cpp">
       <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="CoopLogicComponent.cpp">
+      <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

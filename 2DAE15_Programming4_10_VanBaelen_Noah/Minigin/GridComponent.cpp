@@ -18,10 +18,25 @@
 #include "EnemyObserver.h"
 #include "LevelObserver.h"
 #include "DoorComponent.h"
+#include "SceneManager.h"
+#include "GameState.h"
 
 GridComponent::GridComponent(dae::GameObject* pOwner)
 	:BaseComponent(pOwner)
 {
+}
+
+void GridComponent::Update(float deltaTime)
+{
+	if (m_HasTouchDoor)
+	{
+		m_CurrentTimeDoorTouch += deltaTime * 0.01f;
+		if (m_CurrentTimeDoorTouch >= m_MaxTimeDoorTouch)
+		{
+			m_HasTouchDoor = false;
+			m_CurrentTimeDoorTouch = 0;
+		}
+	}
 }
 
 void GridComponent::InitializeGrid(int rowSize, int columnSize, float tileWidth, float tileHeight)
@@ -39,12 +54,27 @@ void GridComponent::AddLevel(std::string filePath)
 
 void GridComponent::GoToLevel(int levelIndex)
 {
+	if (dae::SceneManager::GetInstance().GetState()->GetCurrentMode() == GameState::CurrentMode::VERSUS && levelIndex > 0)
+	{
+		m_currentLevel = 0;
+		GetOwner()->DestroyAllChildren();
+		m_Subjects->NotifyObservers(Observer::Event::RELOAD_LEVEL, GetOwner()); 
+		dae::SceneManager::GetInstance().SetState(std::make_shared<MainMenuState>(dae::SceneManager::GetInstance().GetSceneByName("MainMenu").get()));
+	}
+
 	if (levelIndex<m_LevelFilePaths.size())
 	{
 		m_currentLevel = levelIndex;
 		GetOwner()->DestroyAllChildren();
 		m_Subjects->NotifyObservers(Observer::Event::RELOAD_LEVEL, GetOwner());
 		InitializeLevel(m_LevelFilePaths[levelIndex]);
+	}
+	else
+	{
+		m_currentLevel = 0;
+		GetOwner()->DestroyAllChildren();
+		m_Subjects->NotifyObservers(Observer::Event::RELOAD_LEVEL, GetOwner());
+		dae::SceneManager::GetInstance().SetState(std::make_shared<ScoreScreenState>(dae::SceneManager::GetInstance().GetSceneByName("ScoreScreen").get()));
 	}
 }
 
@@ -277,6 +307,8 @@ bool GridComponent::IsAnUnBreakableTile(float xPos, float yPos)
 
 void GridComponent::GoToNextLevel()
 {
+	if (m_HasTouchDoor){return;}
+	m_HasTouchDoor = true;
 	++m_currentLevel;
 	GoToLevel(m_currentLevel);
 }
@@ -284,4 +316,9 @@ void GridComponent::GoToNextLevel()
 void GridComponent::AddObserver(Observer* observer)
 {
 	m_Subjects->AddObserver(observer);
+}
+
+void GridComponent::GameOverGrid()
+{
+	GetOwner()->DestroyAllChildren();
 }

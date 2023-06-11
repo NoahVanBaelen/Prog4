@@ -22,23 +22,25 @@ public:
 	void HandleInput(float deltaTime);
 	int AddController();
 	void RemoveAllControllers();
-	void AddCommand(unsigned int controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command);
-	void AddCommand(SDL_Scancode key, ButtonLogic buttonLogic,Command* command);
+	void AddCommand(unsigned int stateIndex,unsigned int controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command);
+	void AddCommand(unsigned int stateIndex, SDL_Scancode key, ButtonLogic buttonLogic,Command* command);
 	void RemoveAllCommands();
 
 private:
 	using ControllerKey = std::pair<unsigned int, Controller::ControllerButton>; //Which controller and Button
+	using ControllState = std::pair<ControllerKey, unsigned int>;
 	using ControllerLogic = std::pair<ControllerKey, ButtonLogic>; //whether the button has to be down, up or pressed this frame
-	using ControllerCommandsMap = std::map<ControllerKey, std::unique_ptr<Command>>; //which command is binded to the button
+	using ControllerCommandsMap = std::map<ControllState, std::unique_ptr<Command>>; //which command is binded to the button
 
-	using ControllerLogicMap = std::map<ControllerKey, ButtonLogic>;
+	using ControllerLogicMap = std::map<ControllState, ButtonLogic>;
 	using ControllerKeyMap = std::map<ControllerKey, Controller::ControllerButton>;
 	ControllerCommandsMap m_ControllerCommands{};
 	ControllerLogicMap m_ControllerLogics{};
 
-	using KeyBoardKeyCommandsMap = std::map<SDL_Scancode, std::unique_ptr<Command>>;
-	using KeyLogicMap = std::map<SDL_Scancode, ButtonLogic>;
-	using KeyLastFrameState = std::map<SDL_Scancode, bool>;
+	using KeyBoardState = std::pair<SDL_Scancode, unsigned int>;
+	using KeyBoardKeyCommandsMap = std::map<KeyBoardState, std::unique_ptr<Command>>;
+	using KeyLogicMap = std::map<KeyBoardState, ButtonLogic>;
+	using KeyLastFrameState = std::map<KeyBoardState, bool>;
 	KeyBoardKeyCommandsMap m_KeyCommands{};
 	KeyLogicMap m_KeyLogics{};
 	KeyLastFrameState m_KeyStateLastFrame{};

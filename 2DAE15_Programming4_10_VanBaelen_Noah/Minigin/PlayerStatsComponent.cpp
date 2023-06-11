@@ -1,5 +1,8 @@
 #include "PlayerStatsComponent.h"
 #include "TransformComponent.h"
+#include "RenderComponent.h"
+#include "SceneManager.h"
+#include "GameState.h"
 
 PlayerStatsComponent::PlayerStatsComponent(dae::GameObject* pOwner)
     :BaseComponent(pOwner)
@@ -12,8 +15,9 @@ void PlayerStatsComponent::Update(float deltaTime)
     if (m_GotSomeThing)//to prevent getting called every frame
     {
         m_CurrentCanPickUpTime += deltaTime * 0.01f;
-        if (m_CurrentCanPickUpTime >= m_MaxWaitTime)
+        if (m_CurrentCanPickUpTime >= m_MaxWaitPickUpTime)
         {
+            m_CurrentCanPickUpTime = 0;
             m_GotSomeThing = false;
         }
     }
@@ -21,8 +25,9 @@ void PlayerStatsComponent::Update(float deltaTime)
     if (m_GotHurt) // to prevent getting called every frame
     {
         m_CurrentCanGetHurtAgainTime += deltaTime * 0.01f;
-        if (m_CurrentCanGetHurtAgainTime >= m_MaxWaitTime)
+        if (m_CurrentCanGetHurtAgainTime >= m_MaxWaitHurtTime)
         {
+            m_CurrentCanGetHurtAgainTime = 0;
             m_GotHurt = false;
         }
     }
@@ -36,11 +41,6 @@ void PlayerStatsComponent::SetStartPosition(glm::vec2 startPosition)
 float PlayerStatsComponent::GetSpeed() const
 {
     return m_Speed;
-}
-
-int PlayerStatsComponent::GetPoints() const
-{
-    return m_Points;
 }
 
 int PlayerStatsComponent::GetLives() const
@@ -83,31 +83,41 @@ void PlayerStatsComponent::DetonateEarly() const
 
 void PlayerStatsComponent::IncreaseSpeed(float speedIncrease)
 {
-    if (m_GotSomeThing) { return; };
+    if (m_GotSomeThing || m_IsDead) { return; };
     m_Speed += speedIncrease;
     ++m_SpeedCount;
     m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
     m_GotSomeThing = true;
 }
 
-void PlayerStatsComponent::IncreasePoints(int points)
-{
-    m_Points += points;
-}
-
 void PlayerStatsComponent::DecreaseLives()
 {
-    if (m_GotHurt) { return; };
+    if (m_GotHurt || m_IsDead) { return; };
     --m_Lives;
-    m_Subjects->NotifyObservers(Observer::Event::PLAYER_DIES, GetOwner());
-    ResetPowerUpStats();
-    ResetToStartPosition();
-    m_GotHurt = true;
+    if (m_Lives >= 0)
+    {
+        m_Subjects->NotifyObservers(Observer::Event::PLAYER_DIES, GetOwner());
+        ResetPowerUpStats();
+        ResetToStartPosition();
+        m_GotHurt = true;
+    }
+    else
+    {
+        m_Subjects->NotifyObservers(Observer::Event::GAME_OVER, GetOwner());
+        ResetPowerUpStats();
+        ResetToStartPosition();
+
+        if (dae::SceneManager::GetInstance().GetState()->GetCurrentMode() == GameState::CurrentMode::COOP)
+        {
+            GetOwner()->GetComponent<RenderComponent>()->SetCanRender(false);
+            m_IsDead = true;
+        }
+    }
 }
 
 void PlayerStatsComponent::IncreaseMaxBombs()
 {
-    if (m_GotSomeThing) { return; };
+    if (m_GotSomeThing || m_IsDead) { return; };
     ++m_MaxAmountOfBombs;
     m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
     m_GotSomeThing = true;
@@ -129,7 +139,7 @@ void PlayerStatsComponent::DecreaseCurrentBombs()
 
 void PlayerStatsComponent::IncreaseFirePower()
 {
-    if (m_GotSomeThing) { return; };
+    if (m_GotSomeThing || m_IsDead) { return; };
     ++m_FirePower;
     m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
     m_GotSomeThing = true;
@@ -137,7 +147,7 @@ void PlayerStatsComponent::IncreaseFirePower()
 
 void PlayerStatsComponent::AllowEarlyDetonation()
 {
-    if (m_GotSomeThing) { return; };
+    if (m_GotSomeThing || m_IsDead) { return; };
     m_AllowToDetonateBombEarly = true;
     m_Subjects->NotifyObservers(Observer::Event::CHANGE_IN_PLAYER_STATS, GetOwner());
     m_GotSomeThing = true;
@@ -156,7 +166,8 @@ void PlayerStatsComponent::ResetPowerUpStats()
 
 void PlayerStatsComponent::StartNewGame()
 {
-    m_Points = 0;
+    GetOwner()->GetComponent<RenderComponent>()->SetCanRender(true);
+    m_IsDead = false;
     m_Lives = 3;
     m_Subjects->NotifyObservers(Observer::Event::PLAYER_RESET_LIVES, GetOwner());
     ResetPowerUpStats();
@@ -174,4 +185,9 @@ void PlayerStatsComponent::ResetToStartPosition()
     position.y = m_StartPosition.y;
 
     GetOwner()->GetComponent<TransformComponent>()->SetLocalPosition(position);
+}
+
+bool PlayerStatsComponent::GetIsDead() const
+{
+    return m_IsDead;
 }

@@ -241,6 +241,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandKeeper.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="CoopLogicComponent.h" />
     <ClInclude Include="DoorComponent.h" />
     <ClInclude Include="EnemyLogicComponent.h" />
     <ClInclude Include="EnemyObserver.h" />
@@ -304,6 +305,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandKeeper.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="CoopLogicComponent.cpp" />
     <ClCompile Include="DoorComponent.cpp" />
     <ClCompile Include="EnemyLogicComponent.cpp" />
     <ClCompile Include="EnemyObserver.cpp" />
