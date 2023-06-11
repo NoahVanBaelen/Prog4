@@ -204,3 +204,12 @@ void SkipLevelCommand::Execute(float)
 {
 	m_pGrid->GetComponent<GridComponent>()->GoToNextLevel();
 }
+
+MuteCommand::MuteCommand()
+{
+}
+
+void MuteCommand::Execute(float)
+{
+	Servicelocator::get_sound_system().MuteToggle();
+}

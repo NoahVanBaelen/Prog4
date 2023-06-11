@@ -96,3 +96,10 @@ public:
 private:
 	std::shared_ptr<dae::GameObject> m_pGrid;
 };
+
+class MuteCommand final : public Command
+{
+public:
+	MuteCommand();
+	void Execute(float deltaTime) override;
+};

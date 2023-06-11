@@ -13,6 +13,7 @@ public:
 
 	void Update(float deltaTime) override;
 	void SetStartPosition(glm::vec2 startPosition);
+	void SetIndexDeathSound(int index);
 
 	float GetSpeed() const;
 	int GetLives() const;
@@ -58,6 +59,8 @@ private:
 	float m_MaxWaitHurtTime{ 10.0f };
 	float m_CurrentCanPickUpTime{ 0 };
 	float m_CurrentCanGetHurtAgainTime{ 0 };
+
+	int m_IndexDeathSound{};
 
 	std::unique_ptr<Subject> m_Subjects = std::make_unique<Subject>();
 };

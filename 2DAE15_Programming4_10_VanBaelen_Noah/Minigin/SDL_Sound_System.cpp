@@ -61,6 +61,10 @@ void SDL_Sound_System::ProccesSoundEvents()
 			}
 
 			audioclip->volume = static_cast<Uint8>(sound.second);
+			if (m_IsMuted)
+			{
+				audioclip->volume = static_cast<Uint8>(0);
+			}
 			Mix_PlayChannel(-1, audioclip.get(), 0);
 		}
 	}

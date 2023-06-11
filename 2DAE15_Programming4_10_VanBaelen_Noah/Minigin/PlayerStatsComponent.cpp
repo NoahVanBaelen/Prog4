@@ -3,6 +3,8 @@
 #include "RenderComponent.h"
 #include "SceneManager.h"
 #include "GameState.h"
+#include "Servicelocator.h"
+#include "SDL_Sound_System.h"
 
 PlayerStatsComponent::PlayerStatsComponent(dae::GameObject* pOwner)
     :BaseComponent(pOwner)
@@ -36,6 +38,11 @@ void PlayerStatsComponent::Update(float deltaTime)
 void PlayerStatsComponent::SetStartPosition(glm::vec2 startPosition)
 {
     m_StartPosition = startPosition;
+}
+
+void PlayerStatsComponent::SetIndexDeathSound(int index)
+{
+    m_IndexDeathSound = index;
 }
 
 float PlayerStatsComponent::GetSpeed() const
@@ -94,6 +101,8 @@ void PlayerStatsComponent::DecreaseLives()
 {
     if (m_GotHurt || m_IsDead) { return; };
     --m_Lives;
+    auto& ss = Servicelocator::get_sound_system();
+    ss.play(static_cast<sound_id>(m_IndexDeathSound), 30);
     if (m_Lives >= 0)
     {
         m_Subjects->NotifyObservers(Observer::Event::PLAYER_DIES, GetOwner());
