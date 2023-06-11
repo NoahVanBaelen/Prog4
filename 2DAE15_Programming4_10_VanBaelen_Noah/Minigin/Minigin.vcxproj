@@ -239,6 +239,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionServicelocator.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandKeeper.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="DoorComponent.h" />
     <ClInclude Include="EnemyLogicComponent.h" />
@@ -247,6 +248,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="Font.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameState.h" />
     <ClInclude Include="GridComponent.h" />
     <ClInclude Include="ICollision_System.h" />
     <ClInclude Include="Input.h" />
@@ -297,6 +299,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="CollisionServicelocator.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandKeeper.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DoorComponent.cpp" />
     <ClCompile Include="EnemyLogicComponent.cpp" />
@@ -305,6 +308,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GridComponent.cpp" />
     <ClCompile Include="ICollision_System.cpp" />
     <ClCompile Include="Input.cpp" />

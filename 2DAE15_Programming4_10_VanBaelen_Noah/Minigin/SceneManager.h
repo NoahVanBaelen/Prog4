@@ -4,6 +4,7 @@
 #include <memory>
 #include "Singleton.h"
 
+class GameState;
 namespace dae
 {
 	class Scene;
@@ -16,10 +17,14 @@ namespace dae
 		void FixedUpdate(float fixedTimeStep);
 		void Update(float deltaTime);
 		void Render();
-		void SetActiveScene(const std::string& name);
+		std::shared_ptr<Scene> GetSceneByName(std::string name) const;
+		void SetState(std::shared_ptr<GameState> newState);
+		std::shared_ptr<GameState> GetState() const;
+
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
 		std::vector<std::shared_ptr<Scene>> m_scenes;
+		std::shared_ptr<GameState> m_pCurrentState;
 	};
 }

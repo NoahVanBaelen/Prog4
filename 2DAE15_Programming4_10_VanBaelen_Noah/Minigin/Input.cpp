@@ -40,10 +40,34 @@ void Input::HandleInput(float deltaTime)
 	const Uint8* state = SDL_GetKeyboardState(NULL);
 	for (SDL_Scancode keyCode : m_Keys)
 	{
-		if (state[keyCode])
+		switch (m_KeyLogics.at(keyCode))
+		{
+		case ButtonLogic::Down:
+			if (!m_KeyStateLastFrame.at(keyCode) && state[keyCode])
+			{
+				m_KeyCommands.at(keyCode)->Execute(deltaTime);
+			}
+			break;
+		case ButtonLogic::Up:
+			if (m_KeyStateLastFrame.at(keyCode) && !state[keyCode])
+			{
+				m_KeyCommands.at(keyCode)->Execute(deltaTime);
+			}
+			break;
+		case ButtonLogic::Pressed:
+			if (m_KeyStateLastFrame.at(keyCode) && state[keyCode])
+			{
+				m_KeyCommands.at(keyCode)->Execute(deltaTime);
+			}
+			break;
+		default:
+			break;
+		}
+		m_KeyStateLastFrame.at(keyCode) = state[keyCode];
+	/*	if (state[keyCode])
 		{
 			m_KeyCommands.at(keyCode)->Execute(deltaTime);
-		}
+		}*/
 	}
 }
 
@@ -52,6 +76,11 @@ int Input::AddController()
 	int newControllerIndex = static_cast<int>(m_Controllers.size());
 	m_Controllers.push_back( std::make_unique<Controller>(newControllerIndex));
 	return newControllerIndex;
+}
+
+void Input::RemoveAllControllers()
+{
+	m_Controllers.clear();
 }
 
 void Input::AddCommand(unsigned int controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command)
@@ -63,9 +92,19 @@ void Input::AddCommand(unsigned int controllerIndex, Controller::ControllerButto
 	m_Buttons.insert(button);
 }
 
-void Input::AddCommand(SDL_Scancode key, Command* command)
+void Input::AddCommand(SDL_Scancode key, ButtonLogic buttonLogic,Command* command)
 {
 	m_KeyCommands.emplace(key, command);
+	m_KeyLogics.emplace(key, buttonLogic);
+	m_KeyStateLastFrame.emplace(key, false);
 
 	m_Keys.insert(key);
+}
+
+void Input::RemoveAllCommands()
+{
+	m_ControllerCommands.clear();
+	m_ControllerLogics.clear();
+	m_KeyCommands.clear();
+	m_Keys.clear();
 }

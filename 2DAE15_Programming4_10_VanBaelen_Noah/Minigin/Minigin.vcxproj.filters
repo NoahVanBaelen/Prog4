@@ -46,6 +46,12 @@
     <Filter Include="Header Files\Collision">
       <UniqueIdentifier>{22a1a999-9c59-4af1-b7a2-8541736bc929}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\State">
+      <UniqueIdentifier>{892a9b08-7035-45de-8ca1-ea81579b883f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\State">
+      <UniqueIdentifier>{8dd07514-0e56-4339-ab75-544feef00fa1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -213,11 +219,17 @@
     <ClInclude Include="DoorComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyObserver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LevelObserver.h">
       <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files\State</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyObserver.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandKeeper.h">
+      <Filter>Header Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +394,12 @@
     </ClCompile>
     <ClCompile Include="LevelObserver.cpp">
       <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandKeeper.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

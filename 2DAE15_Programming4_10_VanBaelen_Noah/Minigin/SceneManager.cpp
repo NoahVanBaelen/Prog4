@@ -1,48 +1,68 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include "GameState.h"
 
 void dae::SceneManager::LateUpdate(float deltaTime)
 {
-	for (auto& scene : m_scenes)
-	{
-		scene->LateUpdate(deltaTime);
-	}
+	m_pCurrentState->LateUpdate(deltaTime);
+	//for (auto& scene : m_scenes)
+	//{
+	//	scene->LateUpdate(deltaTime);
+	//}
 }
 
 void dae::SceneManager::FixedUpdate(float fixedTimeStep)
 {
-	for (auto& scene : m_scenes)
-	{
-		scene->FixedUpdate(fixedTimeStep);
-	}
+	m_pCurrentState->FixedUpdate(fixedTimeStep);
+	//for (auto& scene : m_scenes)
+	//{
+	//	scene->FixedUpdate(fixedTimeStep);
+	//}
 }
 
 void dae::SceneManager::Update(float deltaTime)
 {
-	for(auto& scene : m_scenes)
-	{
-		scene->Update(deltaTime);
-	}
+	m_pCurrentState->Update(deltaTime);
+	//for(auto& scene : m_scenes)
+	//{
+	//	scene->Update(deltaTime);
+	//}
 }
 
 void dae::SceneManager::Render()
 {
-	for (const auto& scene : m_scenes)
+	m_pCurrentState->Render();
+	/*for (const auto& scene : m_scenes)
 	{
 		scene->Render();
-	}
+	}*/
 }
 
-void dae::SceneManager::SetActiveScene(const std::string& name)
+std::shared_ptr<dae::Scene> dae::SceneManager::GetSceneByName(std::string name) const
 {
-	for (std::shared_ptr<Scene> scene : m_scenes)
+	for (std::shared_ptr<dae::Scene> scene : m_scenes)
 	{
-		scene->SetSceneActive(false);
-		if (scene->GetName() == name)
+		if (name == scene->GetName())
 		{
-			scene->SetSceneActive(true);
+			return scene;
 		}
 	}
+	return nullptr;
+}
+
+void dae::SceneManager::SetState(std::shared_ptr<GameState> newState)
+{
+	if (m_pCurrentState)
+	{
+		m_pCurrentState->OnExit();
+	}
+	m_pCurrentState = newState;
+	m_pCurrentState->OnEnter();
+}
+
+std::shared_ptr<GameState> dae::SceneManager::GetState() const
+{
+	return m_pCurrentState;
 }
 
 dae::Scene& dae::SceneManager::CreateScene(const std::string& name)

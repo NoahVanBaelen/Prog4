@@ -21,8 +21,10 @@ public:
 
 	void HandleInput(float deltaTime);
 	int AddController();
+	void RemoveAllControllers();
 	void AddCommand(unsigned int controllerIndex, Controller::ControllerButton button, ButtonLogic buttonLogic, Command* command);
-	void AddCommand(SDL_Scancode key, Command* command);
+	void AddCommand(SDL_Scancode key, ButtonLogic buttonLogic,Command* command);
+	void RemoveAllCommands();
 
 private:
 	using ControllerKey = std::pair<unsigned int, Controller::ControllerButton>; //Which controller and Button
@@ -35,7 +37,11 @@ private:
 	ControllerLogicMap m_ControllerLogics{};
 
 	using KeyBoardKeyCommandsMap = std::map<SDL_Scancode, std::unique_ptr<Command>>;
+	using KeyLogicMap = std::map<SDL_Scancode, ButtonLogic>;
+	using KeyLastFrameState = std::map<SDL_Scancode, bool>;
 	KeyBoardKeyCommandsMap m_KeyCommands{};
+	KeyLogicMap m_KeyLogics{};
+	KeyLastFrameState m_KeyStateLastFrame{};
 
 	std::vector<std::unique_ptr<Controller>> m_Controllers;
 	std::set<Controller::ControllerButton> m_Buttons;

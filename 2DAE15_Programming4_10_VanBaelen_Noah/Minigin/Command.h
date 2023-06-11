@@ -26,25 +26,6 @@ private:
 	dae::GameObject* m_pGameObject;
 };
 
-class AddScoreCommand final : public Command
-{
-public:
-	AddScoreCommand(dae::GameObject* gameObject, int point);
-	void Execute(float deltaTime) override;
-private:
-	int m_Points;
-	dae::GameObject* m_pGameObject;
-};
-
-class LoseLiveCommand final : public Command
-{
-public:
-	LoseLiveCommand(dae::GameObject* gameObject);
-	void Execute(float deltaTime) override;
-private:
-	dae::GameObject* m_pGameObject;
-};
-
 class SpawnBombCommand final : public Command
 {
 public:
@@ -66,4 +47,36 @@ public:
 	void Execute(float deltaTime) override;
 private:
 	std::shared_ptr<dae::GameObject> m_pPlayer;
+};
+
+class MoveInListDownCommand final : public Command
+{
+public:
+	MoveInListDownCommand(std::shared_ptr<dae::GameObject> icon, std::vector<glm::vec2> positions);
+	void Execute(float deltaTime) override;
+private:
+	std::shared_ptr<dae::GameObject> m_pIcon;
+	std::vector<glm::vec2> m_Positions;
+};
+
+class MoveInListUpCommand final : public Command
+{
+public:
+	MoveInListUpCommand(std::shared_ptr<dae::GameObject> icon, std::vector<glm::vec2> positions);
+	void Execute(float deltaTime) override;
+private:
+	std::shared_ptr<dae::GameObject> m_pIcon;
+	std::vector<glm::vec2> m_Positions;
+};
+
+class SelectModeCommand final : public Command
+{
+public:
+	SelectModeCommand(std::shared_ptr<dae::GameObject> icon, int positionYMode1, int positionYMode2, int positionYMode3);
+	void Execute(float deltaTime) override;
+private:
+	std::shared_ptr<dae::GameObject> m_pIcon;
+	int m_PositionYMode1{};
+	int m_PositionYMode2{};
+	int m_PositionYMode3{};
 };

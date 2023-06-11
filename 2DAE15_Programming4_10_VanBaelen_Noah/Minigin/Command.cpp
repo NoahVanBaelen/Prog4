@@ -14,6 +14,11 @@
 #include "CollisionComponent.h"
 #include "BombObserver.h"
 
+#include "SceneManager.h"
+#include "GameState.h"
+
+#include "Input.h"
+
 Command::Command()
 {}
 
@@ -32,27 +37,6 @@ void MoveCommand::Execute(float deltaTime)
 	glm::vec3 currentPosition = m_pGameObject->GetWorldPosition();
 
 	m_pGameObject->GetComponent<TransformComponent>()->SetLocalPosition(currentPosition + newMovement);
-}
-
-AddScoreCommand::AddScoreCommand(dae::GameObject* gameObject, int point)
-	:Command()
-	,m_Points(point)
-	, m_pGameObject(gameObject)
-{}
-
-void AddScoreCommand::Execute(float)
-{
-	m_pGameObject->GetComponent<ScoreComponent>()->AddScore(m_Points);
-}
-
-LoseLiveCommand::LoseLiveCommand(dae::GameObject* gameObject)
-	:Command()
-	, m_pGameObject(gameObject)
-{}
-
-void LoseLiveCommand::Execute(float)
-{
-	m_pGameObject->GetComponent<LiveComponent>()->LoseLive();
 }
 
 SpawnBombCommand::SpawnBombCommand(std::shared_ptr<dae::GameObject> player, std::shared_ptr<dae::GameObject> grid, int widthOffset, int heightOffset, int placeBombSoundID, int explosionSoundID)
@@ -97,10 +81,91 @@ void SpawnBombCommand::Execute(float)
 DetonateBombCommand::DetonateBombCommand(std::shared_ptr<dae::GameObject> player)
 	:Command()
 {
+	if (dae::SceneManager::GetInstance().GetState() && dae::SceneManager::GetInstance().GetState()->GetCurrentMode() == GameState::CurrentMode::MAIN_MENU)
+	{
+		return;
+	}
 	m_pPlayer = player;
 }
 
 void DetonateBombCommand::Execute(float)
 {
 	m_pPlayer->GetComponent<PlayerStatsComponent>()->DetonateEarly();
+}
+
+MoveInListDownCommand::MoveInListDownCommand(std::shared_ptr<dae::GameObject> icon, std::vector<glm::vec2> positions)
+	:Command()
+{
+	m_pIcon = icon;
+	m_Positions = positions;
+}
+
+void MoveInListDownCommand::Execute(float)
+{
+	for (int i = 0; i < m_Positions.size(); i++)
+	{
+		glm::vec2 iconPosition{ m_pIcon->GetWorldPosition() };
+		if (iconPosition.x == m_Positions[i].x && iconPosition.y == m_Positions[i].y)
+		{
+			if (i + 1 < m_Positions.size())
+			{
+				int newIndex{ i + 1 };
+				m_pIcon->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_Positions[newIndex].x, m_Positions[newIndex].y, 0));
+			}
+			return;
+		}
+	}
+}
+
+MoveInListUpCommand::MoveInListUpCommand(std::shared_ptr<dae::GameObject> icon, std::vector<glm::vec2> positions)
+	:Command()
+{
+	m_pIcon = icon;
+	m_Positions = positions;
+}
+
+void MoveInListUpCommand::Execute(float)
+{
+	for (int i = 0; i < m_Positions.size(); i++)
+	{
+		glm::vec2 iconPosition{ m_pIcon->GetWorldPosition() };
+		if (iconPosition.x == m_Positions[i].x && iconPosition.y == m_Positions[i].y)
+		{
+			if (i - 1 > -1)
+			{
+				int newIndex{ i - 1 };
+				m_pIcon->GetComponent<TransformComponent>()->SetLocalPosition(glm::vec3(m_Positions[newIndex].x, m_Positions[newIndex].y, 0));
+			}
+			return;
+		}
+	}
+}
+
+SelectModeCommand::SelectModeCommand(std::shared_ptr<dae::GameObject> icon, int positionYMode1, int positionYMode2, int positionYMode3)
+	:m_PositionYMode1(positionYMode1)
+	,m_PositionYMode2(positionYMode2)
+	,m_PositionYMode3(positionYMode3)
+{
+	m_pIcon = icon;
+}
+
+void SelectModeCommand::Execute(float)
+{
+	glm::vec2 iconPosition{ m_pIcon->GetWorldPosition() };
+
+	if (static_cast<int>(iconPosition.y) == m_PositionYMode1)
+	{
+		auto& sceneManager = dae::SceneManager::GetInstance();
+		sceneManager.SetState(std::make_shared<SinglePlayerState>(sceneManager.GetSceneByName("SinglePlayer").get(), sceneManager.GetState()->GetCommandVector()));
+	}
+
+	if (static_cast<int>(iconPosition.y) == m_PositionYMode2)
+	{
+		std::cout << "Coop Mode\n";
+	}
+
+	if (static_cast<int>(iconPosition.y) == m_PositionYMode3)
+	{
+		std::cout << "Versus Mode\n";
+	}
 }
