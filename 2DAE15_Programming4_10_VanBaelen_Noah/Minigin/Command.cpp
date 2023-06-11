@@ -194,3 +194,13 @@ void GoToMainMenuCommand::Execute(float)
 	auto& sceneManager = dae::SceneManager::GetInstance();
 	sceneManager.SetState(std::make_shared<MainMenuState>(sceneManager.GetSceneByName("MainMenu").get()));
 }
+
+SkipLevelCommand::SkipLevelCommand(std::shared_ptr<dae::GameObject> grid)
+{
+	m_pGrid = grid;
+}
+
+void SkipLevelCommand::Execute(float)
+{
+	m_pGrid->GetComponent<GridComponent>()->GoToNextLevel();
+}

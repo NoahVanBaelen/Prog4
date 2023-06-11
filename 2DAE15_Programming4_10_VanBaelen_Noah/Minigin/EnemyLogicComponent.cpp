@@ -184,3 +184,8 @@ void EnemyLogicComponent::AddObserver(Observer* observer)
 {
 	m_Subjects->AddObserver(observer);
 }
+
+int EnemyLogicComponent::GetScore() const
+{
+	return m_Score;
+}

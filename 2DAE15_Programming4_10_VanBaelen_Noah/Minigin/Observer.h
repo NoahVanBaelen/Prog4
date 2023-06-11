@@ -17,7 +17,8 @@ public:
 		CHANGE_IN_PLAYER_STATS,
 		PLAYER_DIES,
 		PLAYER_RESET_LIVES,
-		GAME_OVER
+		GAME_OVER,
+		END_OF_GAME
 	};
 
 	Observer() = default;

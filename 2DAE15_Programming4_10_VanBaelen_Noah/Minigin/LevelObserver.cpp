@@ -2,6 +2,7 @@
 #include "GridComponent.h"
 #include "PlayerStatsComponent.h"
 #include "VersusPlayerComponent.h"
+#include "HighScoreListComponent.h"
 
 LevelObserver::LevelObserver(dae::GameObject* observer)
 	:m_Observer{ observer }
@@ -42,6 +43,12 @@ void LevelObserver::Notify(Event event, dae::GameObject* /*notifyer*/)
 		if (m_Observer->HasComponent<GridComponent>())
 		{
 			m_Observer->GetComponent<GridComponent>()->GoToStartLevel();
+		}
+		break;
+	case Observer::Event::END_OF_GAME:
+		if (m_Observer->HasComponent<HighScoreListComponent>())
+		{
+			m_Observer->GetComponent<HighScoreListComponent>()->SetHighScoreList();
 		}
 		break;
 	default:

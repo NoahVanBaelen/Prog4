@@ -87,3 +87,12 @@ public:
 	GoToMainMenuCommand();
 	void Execute(float deltaTime) override;
 };
+
+class SkipLevelCommand final : public Command
+{
+public:
+	SkipLevelCommand(std::shared_ptr<dae::GameObject> grid);
+	void Execute(float deltaTime) override;
+private:
+	std::shared_ptr<dae::GameObject> m_pGrid;
+};

@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <SDL_mixer.h>
 using sound_id = unsigned short;
 class sound_system //Interface
 {
@@ -17,5 +16,10 @@ public:
 	virtual int AddSound(std::string) = 0;
 	virtual void OpenAudio() = 0;
 	virtual void CloseAudio() = 0;
+	virtual void ProccesSoundEvents() = 0;
+
+private:
+	class sound_system_impl;
+	sound_system_impl* impl;
 };
 

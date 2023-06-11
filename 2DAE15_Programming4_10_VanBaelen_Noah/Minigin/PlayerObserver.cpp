@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "GameState.h"
 #include "CoopLogicComponent.h"
+#include "HighScoreListComponent.h"
 
 PlayerObserver::PlayerObserver(dae::GameObject* observer)
 	:m_Observer{ observer }
@@ -24,13 +25,13 @@ void PlayerObserver::Notify(Event event, dae::GameObject* notifyer)
 		}
 		break;
 	case Observer::Event::PLAYER_DIES:
-		if (m_Observer->HasComponent<TextComponent>() && !m_Observer->HasComponent<PlayerUIComponent>() && notifyer->HasComponent<PlayerStatsComponent>())
+		if (m_Observer->HasComponent<TextComponent>() && !m_Observer->HasComponent<PlayerUIComponent>() && !m_Observer->HasComponent<HighScoreListComponent>() && notifyer->HasComponent<PlayerStatsComponent>())
 		{
 			m_Observer->GetComponent<TextComponent>()->SetText("Lives: " + std::to_string(notifyer->GetComponent<PlayerStatsComponent>()->GetLives()));
 		}
 		break;
 	case Observer::Event::PLAYER_RESET_LIVES:
-		if (m_Observer->HasComponent<TextComponent>() && !m_Observer->HasComponent<PlayerUIComponent>() && notifyer->HasComponent<PlayerStatsComponent>())
+		if (m_Observer->HasComponent<TextComponent>() && !m_Observer->HasComponent<PlayerUIComponent>() && !m_Observer->HasComponent<HighScoreListComponent>() && notifyer->HasComponent<PlayerStatsComponent>())
 		{
 			m_Observer->GetComponent<TextComponent>()->SetText("Lives: " + std::to_string(notifyer->GetComponent<PlayerStatsComponent>()->GetLives()));
 		}
@@ -39,6 +40,11 @@ void PlayerObserver::Notify(Event event, dae::GameObject* notifyer)
 		if (m_Observer->HasComponent<GridComponent>())
 		{
 			m_Observer->GetComponent<GridComponent>()->GameOverGrid();
+		}
+
+		if (m_Observer->HasComponent<HighScoreListComponent>())
+		{
+			m_Observer->GetComponent<HighScoreListComponent>()->SetHighScoreList();
 		}
 
 		if (dae::SceneManager::GetInstance().GetState()->GetCurrentMode() == GameState::CurrentMode::COOP && m_Observer->HasComponent<CoopLogicComponent>())

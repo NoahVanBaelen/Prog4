@@ -28,6 +28,7 @@ public:
 	void AddLevel(std::string filePath);
 	void GoToLevel(int levelIndex);
 	void GoToStartLevel();
+	void AddScoreHolders(std::shared_ptr<dae::GameObject> highScore);
 
 	Tile ClosestTile(float xPos, float yPos);
 	void SetToClosestTileCenter(glm::vec2& position);
@@ -53,5 +54,7 @@ private:
 	std::vector<Tile> m_Tiles{};
 	std::vector<std::string> m_LevelFilePaths{};
 	std::unique_ptr<Subject> m_Subjects = std::make_unique<Subject>();
+
+	std::shared_ptr<dae::GameObject> m_HighScore;
 };
 

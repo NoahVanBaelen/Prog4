@@ -243,6 +243,9 @@
     <ClInclude Include="CoopLogicComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="HighScoreListComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -423,6 +426,9 @@
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="CoopLogicComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="HighScoreListComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
   </ItemGroup>

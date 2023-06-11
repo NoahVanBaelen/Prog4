@@ -59,6 +59,7 @@ void GridComponent::GoToLevel(int levelIndex)
 		m_currentLevel = 0;
 		GetOwner()->DestroyAllChildren();
 		m_Subjects->NotifyObservers(Observer::Event::RELOAD_LEVEL, GetOwner()); 
+		m_Subjects->NotifyObservers(Observer::Event::END_OF_GAME, GetOwner());
 		dae::SceneManager::GetInstance().SetState(std::make_shared<MainMenuState>(dae::SceneManager::GetInstance().GetSceneByName("MainMenu").get()));
 	}
 
@@ -74,6 +75,7 @@ void GridComponent::GoToLevel(int levelIndex)
 		m_currentLevel = 0;
 		GetOwner()->DestroyAllChildren();
 		m_Subjects->NotifyObservers(Observer::Event::RELOAD_LEVEL, GetOwner());
+		m_Subjects->NotifyObservers(Observer::Event::END_OF_GAME, GetOwner());
 		dae::SceneManager::GetInstance().SetState(std::make_shared<ScoreScreenState>(dae::SceneManager::GetInstance().GetSceneByName("ScoreScreen").get()));
 	}
 }
@@ -82,6 +84,11 @@ void GridComponent::GoToStartLevel()
 {
 	m_Subjects->NotifyObservers(Observer::Event::START_GAME, GetOwner());
 	GoToLevel(0);
+}
+
+void GridComponent::AddScoreHolders(std::shared_ptr<dae::GameObject> highScore)
+{
+	m_HighScore = highScore;
 }
 
 void GridComponent::InitializeLevel(std::string filePath)
@@ -179,6 +186,7 @@ void GridComponent::InitializeLevel(std::string filePath)
 				}
 
 				go_Enemy->GetComponent<EnemyLogicComponent>()->AddObserver(new EnemyObserver{ go_Door.get() });
+				go_Enemy->GetComponent<EnemyLogicComponent>()->AddObserver(new EnemyObserver{ m_HighScore.get() });
 				go_Enemy->SetParent(GetOwner()->shared_from_this(), true);
 				++amountOfEnemies;
 			}

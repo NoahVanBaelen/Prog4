@@ -28,6 +28,7 @@ public:
 	void SetUpEnemy(EnemySpeed speed, EnemyDifficulty difficulty, int score, glm::vec2 rayLenght);
 	void GetKilled();
 	void AddObserver(Observer* observer);
+	int GetScore() const;
 
 private:
 

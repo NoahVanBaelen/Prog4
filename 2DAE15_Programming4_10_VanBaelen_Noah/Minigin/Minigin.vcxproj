@@ -251,6 +251,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GridComponent.h" />
+    <ClInclude Include="HighScoreListComponent.h" />
     <ClInclude Include="ICollision_System.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InputManager.h" />
@@ -315,6 +316,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GridComponent.cpp" />
+    <ClCompile Include="HighScoreListComponent.cpp" />
     <ClCompile Include="ICollision_System.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="InputManager.cpp" />

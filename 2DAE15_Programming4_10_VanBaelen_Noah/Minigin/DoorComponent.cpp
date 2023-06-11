@@ -9,7 +9,7 @@ DoorComponent::DoorComponent(dae::GameObject* pOwner)
 
 void DoorComponent::Update(float)
 {
-	if (m_AmountOfEnemies >= 0 && GetOwner()->HasComponent<TriggerComponent>())
+	if (m_AmountOfEnemies <= 0 && GetOwner()->HasComponent<TriggerComponent>())
 	{
 		std::pair<bool, dae::GameObject*> trigger{ GetOwner()->GetComponent<TriggerComponent>()->GetHasTriggerLastFrame() };
 		if (trigger.first == true && trigger.second->HasComponent<PlayerStatsComponent>())
