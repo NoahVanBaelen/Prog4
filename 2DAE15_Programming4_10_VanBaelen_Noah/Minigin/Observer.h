@@ -11,7 +11,9 @@ public:
 		REMOTE,
 		ENEMY_DIES,
 		END_OF_LEVEL,
-		RELOAD_LEVEL
+		RELOAD_LEVEL,
+		START_GAME,
+		SETUP_GRID_FOR_START
 	};
 
 	Observer() = default;

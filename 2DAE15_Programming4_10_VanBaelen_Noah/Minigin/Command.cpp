@@ -18,6 +18,7 @@
 #include "GameState.h"
 
 #include "Input.h"
+#include "VersusPlayerComponent.h"
 
 Command::Command()
 {}
@@ -33,7 +34,16 @@ MoveCommand::MoveCommand(dae::GameObject* gameObject, glm::vec3 direction)
 
 void MoveCommand::Execute(float deltaTime)
 {
-	glm::vec3 newMovement = m_Direction * (m_pGameObject->GetComponent<PlayerStatsComponent>()->GetSpeed() * deltaTime);
+	glm::vec3 newMovement{};
+	if (m_pGameObject->HasComponent<PlayerStatsComponent>())
+	{
+		newMovement = m_Direction * (m_pGameObject->GetComponent<PlayerStatsComponent>()->GetSpeed() * deltaTime);
+	}
+
+	if (m_pGameObject->HasComponent<VersusPlayerComponent>())
+	{
+		newMovement = m_Direction * (m_pGameObject->GetComponent<VersusPlayerComponent>()->GetSpeed() * deltaTime);
+	}
 	glm::vec3 currentPosition = m_pGameObject->GetWorldPosition();
 
 	m_pGameObject->GetComponent<TransformComponent>()->SetLocalPosition(currentPosition + newMovement);
@@ -141,31 +151,33 @@ void MoveInListUpCommand::Execute(float)
 	}
 }
 
-SelectModeCommand::SelectModeCommand(std::shared_ptr<dae::GameObject> icon, int positionYMode1, int positionYMode2, int positionYMode3)
+SelectModeCommand::SelectModeCommand(std::shared_ptr<dae::GameObject> icon, int positionYMode1, int positionYMode2, int positionYMode3, std::shared_ptr<dae::GameObject> grid)
 	:m_PositionYMode1(positionYMode1)
 	,m_PositionYMode2(positionYMode2)
 	,m_PositionYMode3(positionYMode3)
 {
 	m_pIcon = icon;
+	m_pGrid = grid;
 }
 
 void SelectModeCommand::Execute(float)
 {
 	glm::vec2 iconPosition{ m_pIcon->GetWorldPosition() };
+	auto& sceneManager = dae::SceneManager::GetInstance();
 
+	m_pGrid->GetComponent<GridComponent>()->GoToStartLevel();
 	if (static_cast<int>(iconPosition.y) == m_PositionYMode1)
 	{
-		auto& sceneManager = dae::SceneManager::GetInstance();
 		sceneManager.SetState(std::make_shared<SinglePlayerState>(sceneManager.GetSceneByName("SinglePlayer").get(), sceneManager.GetState()->GetCommandVector()));
 	}
 
 	if (static_cast<int>(iconPosition.y) == m_PositionYMode2)
 	{
-		std::cout << "Coop Mode\n";
+		sceneManager.SetState(std::make_shared<CoopState>(sceneManager.GetSceneByName("Coop").get(), sceneManager.GetState()->GetCommandVector()));
 	}
 
 	if (static_cast<int>(iconPosition.y) == m_PositionYMode3)
 	{
-		std::cout << "Versus Mode\n";
+		sceneManager.SetState(std::make_shared<VersusState>(sceneManager.GetSceneByName("Versus").get(), sceneManager.GetState()->GetCommandVector()));
 	}
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
-
+#include "Subject.h"
 struct Tile
 {
 	int row;
@@ -25,11 +25,13 @@ public:
 	void InitializeGrid(int rowSize, int columnSize, float tileWidth, float tileHeight);
 	void AddLevel(std::string filePath);
 	void GoToLevel(int levelIndex);
+	void GoToStartLevel();
 
 	Tile ClosestTile(float xPos, float yPos);
 	void SetToClosestTileCenter(glm::vec2& position);
 	bool IsAnUnBreakableTile(float xPos, float yPos);
 	void GoToNextLevel();
+	void AddObserver(Observer* observer);
 private:
 
 	void InitializeLevel(std::string filePath);
@@ -42,5 +44,6 @@ private:
 
 	std::vector<Tile> m_Tiles{};
 	std::vector<std::string> m_LevelFilePaths{};
+	std::unique_ptr<Subject> m_Subjects = std::make_unique<Subject>();
 };
 

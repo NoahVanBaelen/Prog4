@@ -2,6 +2,7 @@
 #include "TriggerComponent.h"
 #include "PlayerStatsComponent.h"
 #include "EnemyLogicComponent.h"
+#include "VersusPlayerComponent.h"
 #include "BombComponent.h"
 
 FireComponent::FireComponent(dae::GameObject* pOwner)
@@ -18,6 +19,11 @@ void FireComponent::Update(float deltaTime)
 			if (trigger.second->HasComponent<PlayerStatsComponent>())//player
 			{
 				trigger.second->GetComponent<PlayerStatsComponent>()->DecreaseLives();
+			}
+
+			if (trigger.second->HasComponent<VersusPlayerComponent>())//versus player
+			{
+				trigger.second->GetComponent<VersusPlayerComponent>()->GetKilled();
 			}
 
 			if (trigger.second->HasComponent<EnemyLogicComponent>())//enemy

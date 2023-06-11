@@ -2,7 +2,6 @@
 #include <glm/glm.hpp>
 #include "GameObject.h"
 
-
 class Command
 {
 public: 
@@ -72,10 +71,11 @@ private:
 class SelectModeCommand final : public Command
 {
 public:
-	SelectModeCommand(std::shared_ptr<dae::GameObject> icon, int positionYMode1, int positionYMode2, int positionYMode3);
+	SelectModeCommand(std::shared_ptr<dae::GameObject> icon, int positionYMode1, int positionYMode2, int positionYMode3, std::shared_ptr<dae::GameObject> grid);
 	void Execute(float deltaTime) override;
 private:
 	std::shared_ptr<dae::GameObject> m_pIcon;
+	std::shared_ptr<dae::GameObject> m_pGrid;
 	int m_PositionYMode1{};
 	int m_PositionYMode2{};
 	int m_PositionYMode3{};

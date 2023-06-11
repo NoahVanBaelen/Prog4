@@ -64,10 +64,6 @@ void Input::HandleInput(float deltaTime)
 			break;
 		}
 		m_KeyStateLastFrame.at(keyCode) = state[keyCode];
-	/*	if (state[keyCode])
-		{
-			m_KeyCommands.at(keyCode)->Execute(deltaTime);
-		}*/
 	}
 }
 
@@ -107,4 +103,6 @@ void Input::RemoveAllCommands()
 	m_ControllerLogics.clear();
 	m_KeyCommands.clear();
 	m_Keys.clear();
+	m_KeyLogics.clear();
+	m_KeyStateLastFrame.clear();
 }

@@ -146,10 +146,27 @@ void CoopState::Render()
 
 void CoopState::OnEnter()
 {
+	for (int i = 0; i < m_pCommandVector.size(); i++)
+	{
+		if (m_pCommandVector[i].first == 2)
+		{
+			auto& input = Input::GetInstance();
+			std::shared_ptr<CommandKeeper> keeper = m_pCommandVector[i].second;
+			if (keeper->UsesKey())
+			{
+				input.AddCommand(keeper->GetKey(), keeper->GetLogic(), keeper->GetCommand());
+			}
+			else
+			{
+				input.AddCommand(keeper->GetControllerIndex(), keeper->GetButton(), keeper->GetLogic(), keeper->GetCommand());
+			}
+		}
+	}
 }
 
 void CoopState::OnExit()
 {
+	Input::GetInstance().RemoveAllCommands();
 }
 
 GameState::CurrentMode CoopState::GetCurrentMode()
@@ -185,10 +202,27 @@ void VersusState::Render()
 
 void VersusState::OnEnter()
 {
+	for (int i = 0; i < m_pCommandVector.size(); i++)
+	{
+		if (m_pCommandVector[i].first == 3)
+		{
+			auto& input = Input::GetInstance();
+			std::shared_ptr<CommandKeeper> keeper = m_pCommandVector[i].second;
+			if (keeper->UsesKey())
+			{
+				input.AddCommand(keeper->GetKey(), keeper->GetLogic(), keeper->GetCommand());
+			}
+			else
+			{
+				input.AddCommand(keeper->GetControllerIndex(), keeper->GetButton(), keeper->GetLogic(), keeper->GetCommand());
+			}
+		}
+	}
 }
 
 void VersusState::OnExit()
 {
+	Input::GetInstance().RemoveAllCommands();
 }
 
 GameState::CurrentMode VersusState::GetCurrentMode()

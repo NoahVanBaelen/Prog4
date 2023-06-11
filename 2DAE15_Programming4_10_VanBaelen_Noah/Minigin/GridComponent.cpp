@@ -43,8 +43,15 @@ void GridComponent::GoToLevel(int levelIndex)
 	{
 		m_currentLevel = levelIndex;
 		GetOwner()->DestroyAllChildren();
+		m_Subjects->NotifyObservers(Observer::Event::RELOAD_LEVEL, GetOwner());
 		InitializeLevel(m_LevelFilePaths[levelIndex]);
 	}
+}
+
+void GridComponent::GoToStartLevel()
+{
+	m_Subjects->NotifyObservers(Observer::Event::START_GAME, GetOwner());
+	GoToLevel(0);
 }
 
 void GridComponent::InitializeLevel(std::string filePath)
@@ -272,4 +279,9 @@ void GridComponent::GoToNextLevel()
 {
 	++m_currentLevel;
 	GoToLevel(m_currentLevel);
+}
+
+void GridComponent::AddObserver(Observer* observer)
+{
+	m_Subjects->AddObserver(observer);
 }
