@@ -24,3 +24,21 @@ void Logging_Sound_System::CloseAudio()
 	_real_ss->CloseAudio();
 	std::cout << "Close Audio" << std::endl;
 }
+
+void Logging_Sound_System::playMusic(const sound_id id)
+{
+	_real_ss->playMusic(id);
+	std::cout << "Play Music" << std::endl;
+}
+
+int Logging_Sound_System::AddMusic(std::string filePath)
+{
+	std::cout << "Add Music" << std::endl;
+	return _real_ss->AddMusic(filePath);
+}
+
+void Logging_Sound_System::MuteToggle()
+{
+	_real_ss->MuteToggle();
+	std::cout << "Toggle Mute" << std::endl;
+}

@@ -17,5 +17,8 @@ public:
 	int AddSound(std::string filePath) override;
 	void OpenAudio() override;
 	void CloseAudio() override;
+	virtual void playMusic(const sound_id) override;
+	virtual int AddMusic(std::string) override;
+	virtual void MuteToggle() override;
 };
 

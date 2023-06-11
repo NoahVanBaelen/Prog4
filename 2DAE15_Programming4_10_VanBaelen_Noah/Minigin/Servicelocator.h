@@ -7,6 +7,9 @@ class Null_Sound_System final : public sound_system
 	int AddSound(std::string) override { return -1; }
 	void OpenAudio() override {};
 	void CloseAudio() override {};
+	void playMusic(const sound_id) override {};
+	int AddMusic(std::string) override { return -1; };
+	void MuteToggle() override {};
 };
 
 static std::unique_ptr<sound_system> _ss_instance;
